@@ -4,6 +4,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 #include "MyLyra/MyLyraLogChannels.h"
+#include "MyLyra/Character/MyLyraPawnData.h"
 
 const FName UMyLyraPawnExtensionComponent::NAME_ActorFeatureName("PawnExtension");
 
@@ -14,8 +15,25 @@ UMyLyraPawnExtensionComponent::UMyLyraPawnExtensionComponent(const FObjectInitia
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-PRAGMA_DISABLE_OPTIMIZATION
+void UMyLyraPawnExtensionComponent::SetPawnData(const UMyLyraPawnData* InPawnData)
+{
+	// Pawn에 대해 Authority가 없을 경우, SetPawnData 진행 중단
+	APawn* Pawn = GetPawnChecked<APawn>();
+	if (Pawn->GetLocalRole() != ROLE_Authority)
+	{
+		return;
+	}
 
+	if (IsValid(PawnData))
+	{
+		return;
+	}
+
+	// PawnData Update!
+	PawnData = InPawnData;
+}
+
+PRAGMA_DISABLE_OPTIMIZATION
 void UMyLyraPawnExtensionComponent::OnRegister()
 {
 	Super::OnRegister();
@@ -36,7 +54,6 @@ void UMyLyraPawnExtensionComponent::OnRegister()
 	// 디버깅을 위한 함수
 	UGameFrameworkComponentManager* Manager = UGameFrameworkComponentManager::GetForActor(GetOwningActor());
 }
-
 PRAGMA_ENABLE_OPTIMIZATION
 
 void UMyLyraPawnExtensionComponent::BeginPlay()
@@ -78,12 +95,73 @@ FName UMyLyraPawnExtensionComponent::GetFeatureName() const
 
 void UMyLyraPawnExtensionComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
 {
-	IGameFrameworkInitStateInterface::OnActorInitStateChanged(Params);
+	if (Params.FeatureName != NAME_ActorFeatureName)	// 나 자신은 제외함을 의미
+	{
+		// MyLyraPawnExtensionComponent는 다른 Feature Component들의 상태가 DataAvailable를 관찰하여, Sync를 맞추는 구간이 있었다. (CanChangeInitState)
+		// - 이를 가능케하기 위해, OnActorInitStateChanged에선 DataAvailable에 대해 지속적으로 CheckDefaultInitialization을 호출해, 상태를 확인한다.
+		const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+		if (Params.FeatureState == InitTags.InitState_DataAvailable)
+		{
+			CheckDefaultInitialization();
+		}
+	}
 }
 
 bool UMyLyraPawnExtensionComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
 {
-	return IGameFrameworkInitStateInterface::CanChangeInitState(Manager, CurrentState, DesiredState);
+	check(Manager);
+
+	APawn* Pawn = GetPawn<APawn>();
+	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+
+	// InitState_Spawned 초기화
+	if (CurrentState.IsValid() == false && DesiredState == InitTags.InitState_Spawned)
+	{
+		// Pawn이 잘 세팅만 되어 있으면 바로 Spawned 로 넘어감
+		if (IsValid(Pawn))
+		{
+			return true;
+		}
+	}
+
+	// Spawned -> DataAvailable
+	if (CurrentState == InitTags.InitState_Spawned && DesiredState == InitTags.InitState_DataAvailable)
+	{
+		// 아마 PawnData를 누군가 설정하는 상태
+		if (IsValid(PawnData) == false)
+		{
+			return false;
+		}
+
+		// LocallyControlled인 Pawn이 Controller가 없으면 Error
+		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+		if (bIsLocallyControlled)
+		{
+			if (GetController<AController>() == nullptr)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// DataAvailable -> DataInitialized
+	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
+	{
+		// Actor 에 바인드된 모든 Feature들이 DataAvailable 상태일 때, DataInitialized 로 넘어감
+		// - HaveAllFeaturesReachedInitState 확인
+		return Manager->HaveAllFeaturesReachedInitState(Pawn, InitTags.InitState_DataAvailable);
+	}
+
+	// DataInitialized -> GameplayReady
+	if (CurrentState == InitTags.InitState_DataInitialized && DesiredState == InitTags.InitState_GameplayReady)
+	{
+		return true;
+	}
+
+	// 위의 선형적인(Linear) transition이 아니면 false
+	return false;
 }
 
 void UMyLyraPawnExtensionComponent::CheckDefaultInitialization()

@@ -7,6 +7,8 @@
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "MyLyraPawnExtensionComponent.generated.h"
 
+class UMyLyraPawnData;
+
 /**
  * 초기화 전반을 조정하는 Component
  * Owner의 Component들의 초기화를 중재하는 역할?
@@ -25,11 +27,18 @@ public:
 	static const FName NAME_ActorFeatureName;
 
 	/**
+	 * member methods
+	 */
+	static UMyLyraPawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) { return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraPawnExtensionComponent>() : nullptr);}
+
+	template<class T>
+	const T* GetPawnData() const;
+	void SetPawnData(const UMyLyraPawnData* InPawnData);
+
+	/**
 	 * UPawnComponent Interface
 	 */
-	// 생성 초반에 호출되며, 이 단계에서 Actor에 Component를 부착하는 단계
-	virtual void OnRegister() override;
-
+	virtual void OnRegister() override;	// 생성 초반에 호출되며, 이 단계에서 Actor에 Component를 부착하는 단계
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
@@ -40,4 +49,16 @@ public:
 	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) final;
 	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
 	virtual void CheckDefaultInitialization() final;
+
+	/**
+	 * Pawn을 생성한 데이터 캐싱
+	 */
+	UPROPERTY(EditInstanceOnly, Category = "MyLyra|Pawn")
+	TObjectPtr<const UMyLyraPawnData> PawnData;
 };
+
+template <class T>
+const T* UMyLyraPawnExtensionComponent::GetPawnData() const
+{
+	return Cast<T>(PawnData);
+}

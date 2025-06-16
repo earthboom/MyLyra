@@ -1,10 +1,134 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraHeroComponent.h"
+#include "Components/GameFrameworkComponentManager.h"
+#include "MyLyraPawnExtensionComponent.h"
+#include "MyLyra/MyLyraGameplayTags.h"
+#include "MyLyra/MyLyraLogChannels.h"
+#include "MyLyra/Player/MyLyraPlayerState.h"
+
+const FName UMyLyraHeroComponent::NAME_ActorFeatureName("");
 
 UMyLyraHeroComponent::UMyLyraHeroComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryComponentTick.bStartWithTickEnabled = false;
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UMyLyraHeroComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	// 정상적인 Actor에 등록되어 있는지를 확인
+	{
+		if (GetPawn<APawn>() == nullptr)
+		{
+			UE_LOG(LogMyLyra, Error, TEXT("This component has been added to a BP whose base class is not a Pawn!"));
+			return;
+		}
+	}
+
+	// GameFrameworkComponentManager에 InitState 사용을 위해 등록 진행
+	// - 등록은 상속 받았던 IGameFrameworkInitStateInterface 함수 RegisterInitStateFeature() 활용
+	RegisterInitStateFeature();
+}
+
+void UMyLyraHeroComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// PawnExtensionComponent 에 대해서(PawnExtension Feature) OnActorInitStateChanged() 관찰하도록 (Observing)
+	BindOnActorInitStateChanged(UMyLyraPawnExtensionComponent::NAME_ActorFeatureName, FGameplayTag(), false);
+
+	// InitState_Spawned 로 초기화
+	ensure(TryToChangeInitState(FMyLyraGameplayTags::Get().InitState_Spawned));
+
+	// ForceUpdate 진행
+	CheckDefaultInitialization();
+}
+
+void UMyLyraHeroComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	UnregisterInitStateFeature();
+
+	Super::EndPlay(EndPlayReason);
+}
+
+FName UMyLyraHeroComponent::GetFeatureName() const
+{
+	return NAME_ActorFeatureName;
+}
+
+void UMyLyraHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
+{
+	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+	
+	if (Params.FeatureName == UMyLyraPawnExtensionComponent::NAME_ActorFeatureName)
+	{
+		// MyLyraPawnExtensionComponent는 DataInitialized 상태 변화 관찰 후, MyLyraHeroComponent도 DataInitialized 상태로 변경
+		// - CanChangeInitState 확인
+		if (Params.FeatureState == InitTags.InitState_DataInitialized)
+		{
+			CheckDefaultInitialization();
+		}
+	}
+}
+
+bool UMyLyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
+{
+	check(Manager);
+	
+	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+	APawn* Pawn = GetPawn<APawn>();
+	AMyLyraPlayerState* MyLyraPS = GetPlayerState<AMyLyraPlayerState>();
+
+	// InitState_Spawned 초기화
+	if (CurrentState.IsValid() == false && DesiredState == InitTags.InitState_Spawned)
+	{
+		// Pawn이 잘 세팅만 되어 있으면 바로 Spawned 로 넘어감
+		if (IsValid(Pawn))
+		{
+			return true;
+		}
+	}
+
+	// Spawned -> DataAvailable
+	if (CurrentState == InitTags.InitState_Spawned && DesiredState == InitTags.InitState_DataAvailable)
+	{
+		if (IsValid(MyLyraPS) == false)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	// DataAvailable -> DataInitialized
+	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
+	{
+		// PawnExtensionComponent 가 DataInitialized될 때까지 기다림 ( == 모든 Feature Component가 DataAvailable인 상태 )
+		return MyLyraPS && Manager->HasFeatureReachedInitState(Pawn, UMyLyraPawnExtensionComponent::NAME_ActorFeatureName, InitTags.InitState_DataInitialized);
+	}
+
+	// DataInitialized -> GameplayReady
+	if (CurrentState == InitTags.InitState_DataInitialized && DesiredState == InitTags.InitState_GameplayReady)
+	{
+		return true;
+	}
+	
+	return false;
+}
+
+void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
+{
+	IGameFrameworkInitStateInterface::HandleChangeInitState(Manager, CurrentState, DesiredState);
+}
+
+void UMyLyraHeroComponent::CheckDefaultInitialization()
+{
+	// 앞서 BindOnActorInitStateChanged 에서 봤듯, Hero Feature 는 Pawn Extension Feature에 종속되어 있으므로, CheckDefaultInitializationForImplementers 을 호출하지 않음
+	// ContinueInitStateChain 은 앞서 PawnExtensionComponent와 같음
+	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+	static const TArray<FGameplayTag> StateChain = { InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady};
+	ContinueInitStateChain(StateChain);
 }

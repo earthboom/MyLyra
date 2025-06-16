@@ -17,4 +17,23 @@ class MYLYRA_API UMyLyraHeroComponent : public UPawnComponent, public IGameFrame
 
 public:
 	UMyLyraHeroComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	/** FeatureName 정의*/
+	static const FName NAME_ActorFeatureName;
+
+	/**
+	 * UPawnComponent Interface
+	 */
+	virtual void OnRegister() override;	// 생성 초반에 호출되며, 이 단계에서 Actor에 Component를 부착하는 단계
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	/**
+	 * IGameFrameworkInitStateInterface 
+	 */
+	virtual FName GetFeatureName() const final;
+	virtual void OnActorInitStateChanged(const FActorInitStateChangedParams& Params) final;
+	virtual bool CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const final;
+	virtual void HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) final;
+	virtual void CheckDefaultInitialization() final;
 };

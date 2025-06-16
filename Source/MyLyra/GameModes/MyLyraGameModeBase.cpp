@@ -7,6 +7,7 @@
 #include "MyLyra/MyLyraLogChannels.h"
 #include "MyLyra/Character/MyLyraCharacter.h"
 #include "MyLyra/Character/MyLyraPawnData.h"
+#include "MyLyra/Character/MyLyraPawnExtensionComponent.h"
 #include "MyLyra/Player/MyLyraPlayerController.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
 
@@ -63,8 +64,29 @@ void AMyLyraGameModeBase::HandleStartingNewPlayer_Implementation(APlayerControll
 
 APawn* AMyLyraGameModeBase::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
 {
-	UE_LOG(LogMyLyra, Log, TEXT("SpawnDefaultPawnAtTransform_Implementation is called!!"));
-	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, SpawnTransform);
+	FActorSpawnParameters SpawnInfo;
+	SpawnInfo.Instigator = GetInstigator();
+	SpawnInfo.ObjectFlags |= RF_Transient;
+	SpawnInfo.bDeferConstruction = true;
+
+	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
+	{
+		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
+		{
+			// FindPawnExtensionComponent 구성
+			if (UMyLyraPawnExtensionComponent* PawnExtensionComponent = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			{
+				if (const UMyLyraPawnData* PawnData = GetPawnDataForController(NewPlayer))
+				{
+					PawnExtensionComponent->SetPawnData(PawnData);
+				}
+			}
+			SpawnedPawn->FinishSpawning(SpawnTransform);
+			return SpawnedPawn;
+		}
+	}
+
+	return nullptr;
 }
 
 void AMyLyraGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
