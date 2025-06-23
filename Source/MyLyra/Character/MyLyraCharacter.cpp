@@ -32,4 +32,8 @@ void AMyLyraCharacter::Tick(float DeltaTime)
 void AMyLyraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	// Pawn이 Prossess로서, Controller와 PlayerState 정보 접근이 가능한 상태가 되었음
+	// - SetupPlayerInputComponent 확인
+	PawnExtensionComponent->SetupPlayerInputComponent();
 }

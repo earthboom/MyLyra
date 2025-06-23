@@ -33,7 +33,14 @@ void UMyLyraPawnExtensionComponent::SetPawnData(const UMyLyraPawnData* InPawnDat
 	PawnData = InPawnData;
 }
 
+void UMyLyraPawnExtensionComponent::SetupPlayerInputComponent()
+{
+	// ForceUpdate로 다시 InitState 상태 변환 시작(연결 고리)
+	CheckDefaultInitialization();
+}
+
 PRAGMA_DISABLE_OPTIMIZATION
+
 void UMyLyraPawnExtensionComponent::OnRegister()
 {
 	Super::OnRegister();

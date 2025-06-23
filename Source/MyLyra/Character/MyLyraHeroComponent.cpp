@@ -7,7 +7,8 @@
 #include "MyLyra/MyLyraLogChannels.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
 
-const FName UMyLyraHeroComponent::NAME_ActorFeatureName("");
+// FeatureName 정의
+const FName UMyLyraHeroComponent::NAME_ActorFeatureName("Hero");
 
 UMyLyraHeroComponent::UMyLyraHeroComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -122,6 +123,28 @@ bool UMyLyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
 {
 	IGameFrameworkInitStateInterface::HandleChangeInitState(Manager, CurrentState, DesiredState);
+
+	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
+
+	// DataAvaliable -> DataInitialized 단계
+	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState !=  InitTags.InitState_DataInitialized)
+	{
+		APawn* Pawn = GetPawn<APawn>();
+		AMyLyraPlayerState* MyLyraState = GetPlayerState<AMyLyraPlayerState>();
+		if (ensure(Pawn && MyLyraState) == false)
+		{
+			return;
+		}
+
+		// Input, Camera 핸들링
+		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+		const UMyLyraPawnData* PawnData = nullptr;
+		UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+		if (PawnExtComp != nullptr)
+		{
+			PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
+		}
+	}
 }
 
 void UMyLyraHeroComponent::CheckDefaultInitialization()

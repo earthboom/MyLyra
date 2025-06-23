@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MyLyra/Character/MyLyraPawnData.h"
 #include "Components/PawnComponent.h"
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "MyLyraPawnExtensionComponent.generated.h"
-
-class UMyLyraPawnData;
 
 /**
  * 초기화 전반을 조정하는 Component
@@ -33,7 +32,9 @@ public:
 
 	template<class T>
 	const T* GetPawnData() const;
+	
 	void SetPawnData(const UMyLyraPawnData* InPawnData);
+	void SetupPlayerInputComponent();
 
 	/**
 	 * UPawnComponent Interface
