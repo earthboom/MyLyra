@@ -5,6 +5,7 @@
 #include "MyLyraPawnExtensionComponent.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 #include "MyLyra/MyLyraLogChannels.h"
+#include "MyLyra/Camera/MyLyraCameraComponent.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
 
 // FeatureName 정의
@@ -122,12 +123,12 @@ bool UMyLyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 
 void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState)
 {
-	IGameFrameworkInitStateInterface::HandleChangeInitState(Manager, CurrentState, DesiredState);
+	// IGameFrameworkInitStateInterface::HandleChangeInitState(Manager, CurrentState, DesiredState);
 
 	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
 
 	// DataAvaliable -> DataInitialized 단계
-	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState !=  InitTags.InitState_DataInitialized)
+	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
 	{
 		APawn* Pawn = GetPawn<APawn>();
 		AMyLyraPlayerState* MyLyraState = GetPlayerState<AMyLyraPlayerState>();
@@ -144,6 +145,16 @@ void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		{
 			PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
 		}
+
+		if (bIsLocallyControlled && IsValid(PawnData))
+		{
+			// 현재 MyLyraCharater에 Attach된 CameraComponent를 찾음
+			UMyLyraCameraComponent* CameraComponent = UMyLyraCameraComponent::FindCameraComponent(Pawn);
+			if (IsValid(CameraComponent))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &UMyLyraHeroComponent::DetermineCameraMode);
+			}
+		}
 	}
 }
 
@@ -155,3 +166,26 @@ void UMyLyraHeroComponent::CheckDefaultInitialization()
 	static const TArray<FGameplayTag> StateChain = { InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady};
 	ContinueInitStateChain(StateChain);
 }
+
+PRAGMA_DISABLE_OPTIMIZATION
+TSubclassOf<UMyLyraCameraMode> UMyLyraHeroComponent::DetermineCameraMode() const
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	if (IsValid(Pawn) == false)
+	{
+		return nullptr;
+	}
+
+	UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+	if (IsValid(PawnExtComp))
+	{
+		const UMyLyraPawnData* PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
+		if (IsValid(PawnData))
+		{
+			return PawnData->DefaultCameraMode;
+		}
+	}
+
+	return nullptr;
+}
+PRAGMA_ENABLE_OPTIMIZATION

@@ -13,5 +13,7 @@ UCLASS()
 class MYLYRA_API AMyLyraPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public:
+	AMyLyraPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 };

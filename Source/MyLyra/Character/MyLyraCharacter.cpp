@@ -2,6 +2,7 @@
 
 #include "MyLyraCharacter.h"
 #include "MyLyraPawnExtensionComponent.h"
+#include "MyLyra/Camera/MyLyraCameraComponent.h"
 
 // Sets default values
 AMyLyraCharacter::AMyLyraCharacter()
@@ -14,6 +15,12 @@ AMyLyraCharacter::AMyLyraCharacter()
 	// PawnExtensionComponent 생성
 	PawnExtensionComponent = CreateDefaultSubobject<UMyLyraPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
 	// 이후 PawnExtensionComponent 가 관리할 Component 들은 BP에서 생성함으로써, PawnExtensionComponent가 무조건적으로 먼저 생성됨을 보장 받는다.(SCS)
+
+	// Camera Component 생성
+	{
+		CameraComponent = CreateDefaultSubobject<UMyLyraCameraComponent>(TEXT("CameraComponent"));
+		CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
+	}
 }
 
 // Called when the game starts or when spawned

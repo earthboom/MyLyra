@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "MyLyraPawnData.generated.h"
 
+class UMyLyraCameraMode;
+
 /**
  * 어떤 Pawn을 생성하는지, 입력을 어떻게 하는지, 스킬 뭘 사용하는지 와 같은 데이터 , Ability 를 뭘 들고 있는지
  */
@@ -20,4 +22,8 @@ public:
 	// Pawn class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|Pawn")
 	TSubclassOf<APawn> PawnClass;
+
+	// Camera Mode
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|Camera")
+	TSubclassOf<UMyLyraCameraMode> DefaultCameraMode;
 };
