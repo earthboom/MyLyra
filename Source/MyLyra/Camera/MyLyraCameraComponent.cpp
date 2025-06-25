@@ -24,8 +24,14 @@ void UMyLyraCameraComponent::OnRegister()
 void UMyLyraCameraComponent::GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView)
 {
 	check(CameraModeStack);
-	
+
+	// 해당 함수는 HeroComponent에서 PawnData 에서 DefaultCameraMode를 가져와서 CameraModeStack에 추가하여, CameraMode 블랜딩을 준비
 	UpdateCameraModes();
+
+	// EvaluateStack은 CameraModeStack에 있는 CameraMode를 업데이트(+블랜딩)하고 CameraModeStack을 Bottom-Top까지 업데이트된 CameraMode들을 Lerp를 진행
+	// - 이에 대한 결과는 CameraModeView에 캐싱됨
+	FMyLyraCameraModeView CameraModeView;
+	CameraModeStack->EvaluateStack(DeltaTime, CameraModeView);
 }
 
 void UMyLyraCameraComponent::UpdateCameraModes()
@@ -39,7 +45,7 @@ void UMyLyraCameraComponent::UpdateCameraModes()
 		const TSubclassOf<UMyLyraCameraMode> CameraMode = DetermineCameraModeDelegate.Execute();
 		if (IsValid(CameraMode))
 		{
-			// CameraModeStack->PushCameraMode(CameraMode);
+			CameraModeStack->PushCameraMode(CameraMode);
 		}
 	}
 }

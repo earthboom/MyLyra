@@ -23,6 +23,8 @@ public:
 
 	static UMyLyraCameraComponent* FindCameraComponent(const AActor* Actor){ return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraCameraComponent>() : nullptr); }
 
+	AActor* GetTargetActor() const { return GetOwner(); }
+	
 	// CameraComponent Interface
 	virtual void OnRegister() final;
 	virtual void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView) override;
