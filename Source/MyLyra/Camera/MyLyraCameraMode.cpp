@@ -8,15 +8,43 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(MyLyraCameraMode)
 
+#pragma region FMyLyraCameraModeView
 FMyLyraCameraModeView::FMyLyraCameraModeView()
 	: Location(ForceInit)
-	, Rotation(ForceInit)
-	, ControlRotation(ForceInit)
-	, FieldOfView(MYLYRA_CAMERA_DEFAULT_FOV)
+	  , Rotation(ForceInit)
+	  , ControlRotation(ForceInit)
+	  , FieldOfView(MYLYRA_CAMERA_DEFAULT_FOV)
 {
-	
 }
 
+void FMyLyraCameraModeView::Blend(const FMyLyraCameraModeView& Other, float OtherWeight)
+{
+	if (OtherWeight <= 0.0f)
+	{
+		return;
+	}
+	else if (OtherWeight >= 1.0f)
+	{
+		// Weight가 1.0f이면 Other를 덮어쓰면 됨
+		*this = Other;
+		return;
+	}
+
+	// Location + OtherWeight * (Other.Location - Location)
+	Location = FMath::Lerp(Location, Other.Location, OtherWeight);
+
+	// Location과 같은 방식 Lerp (ControlRotation과 FieldOfView도 같음)
+	const FRotator DeltaRotation = (Other.Rotation - Rotation).GetNormalized();
+	Rotation = Rotation + (OtherWeight * DeltaRotation);
+
+	const FRotator DeltaControlRotation = (Other.ControlRotation - ControlRotation).GetNormalized();
+	ControlRotation = ControlRotation + (OtherWeight * DeltaControlRotation);
+
+	FieldOfView = FMath::Lerp(FieldOfView, Other.FieldOfView, OtherWeight);
+}
+#pragma endregion 
+
+#pragma region UMyLyraCameraMode
 UMyLyraCameraMode::UMyLyraCameraMode(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -27,6 +55,9 @@ UMyLyraCameraMode::UMyLyraCameraMode(const FObjectInitializer& ObjectInitializer
 	BlendTime = 0.0f;
 	BlendAlpha = 1.0f;
 	BlendWeight = 1.0f;
+
+	BlendFunction = EMyLyraCameraModeBlendFunction::EaseInOut;
+	BlendExponent = 4.0f;
 }
 
 void UMyLyraCameraMode::UpdateCameraMode(float DeltaTime)
@@ -60,7 +91,39 @@ void UMyLyraCameraMode::UpdateView(float DeltaTime)
 
 void UMyLyraCameraMode::UpdateBlending(float DeltaTime)
 {
-	
+	// BlendAlpha를 DeltaTime을 통해 계산
+	if (BlendTime > 0)
+	{
+		// BlendTime은 Blending 과정 중 시간(초)
+		// - BlendAlpha는 0 -> 1 로 변화하는 과정
+		// - DeltaTime을 활용해, BlendTime을 1로 볼 경우, 진행 정도를 누적
+		BlendAlpha += (DeltaTime / BlendTime);
+	}
+	else
+	{
+		BlendAlpha = 1.0f;
+	}
+
+	// BlendWeight를 [0, 1]을 BlendFunction에 맞게 재매핑
+	const float Exponent = (BlendExponent > 0.0f) ? BlendExponent : 1.0f;
+	switch (BlendFunction)
+	{
+	case EMyLyraCameraModeBlendFunction::Linear:
+		BlendWeight = BlendAlpha;
+		break;
+	case EMyLyraCameraModeBlendFunction::EaseIn:
+		BlendWeight = FMath::InterpEaseIn(0.0f, 1.0f, BlendAlpha, Exponent);
+		break;
+	case EMyLyraCameraModeBlendFunction::EaseOut:
+		BlendWeight = FMath::InterpEaseOut(0.0f, 1.0f, BlendAlpha, Exponent);
+		break;
+	case EMyLyraCameraModeBlendFunction::EaseInOut:
+		BlendWeight = FMath::InterpEaseInOut(0.0f, 1.0f, BlendAlpha, Exponent);
+		break;
+	default:
+		checkf(false, TEXT("updateBlending : Invalid BlendFunction [%d]\n"), (uint8(), BlendFunction));
+		break;
+	}
 }
 
 UMyLyraCameraComponent* UMyLyraCameraMode::GetMyLyraCameraComponent() const
@@ -104,7 +167,9 @@ FRotator UMyLyraCameraMode::GetPivotRotation() const
 
 	return TargetActor->GetActorRotation();
 }
+#pragma endregion
 
+#pragma region UMyLyraCameraModeStack
 UMyLyraCameraModeStack::UMyLyraCameraModeStack(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -200,7 +265,7 @@ void UMyLyraCameraModeStack::PushCameraMode(TSubclassOf<UMyLyraCameraMode>& Came
 	const bool bShouldBlend = ((CameraMode->BlendTime > 0.0f) && (StackSize > 0));
 	const float BlendWeight = (bShouldBlend ? ExistingStackContribution : 1.0f);
 	CameraMode->BlendWeight = BlendWeight;
-	
+
 	CameraModeStack.Insert(CameraMode, 0);
 
 	// 마지막은 항상 1.0f이 되어야 함
@@ -233,7 +298,7 @@ void UMyLyraCameraModeStack::UpdateStack(float DeltaTime)
 	{
 		UMyLyraCameraMode* CameraMode = CameraModeStack[StackIndex];
 		check(CameraMode);
-		
+
 		CameraMode->UpdateCameraMode(DeltaTime);
 
 		// 하나라도 CameraMode의 BlendWeight가 1.0f에 도달하면, 그 이후의 CameraMode를 제거
@@ -254,4 +319,26 @@ void UMyLyraCameraModeStack::UpdateStack(float DeltaTime)
 
 void UMyLyraCameraModeStack::BlendStack(FMyLyraCameraModeView& OutCameraModeView) const
 {
+	const int32 StackSize = CameraModeStack.Num();
+	if (StackSize <= 0)
+	{
+		return;
+	}
+
+	// CameraModeStack은 Bottom -> Up 순서로 Blend 진행 (가장 이전 데이터부터 최신 데이터 순서)
+	const UMyLyraCameraMode* CameraMode = CameraModeStack[StackSize - 1];
+	check(CameraMode);
+
+	// 가장 아래 (Bottom)은 BlendWeight가 1.0f
+	OutCameraModeView = CameraMode->View;
+
+	// 이미 Index = [StackSize - 1] 이미 OutCamraModeView로 지정했으므로, StackSize - 2부터 순회
+	for (int32 StackIndex = (StackSize -2); StackIndex >= 0; -- StackIndex)
+	{
+		CameraMode = CameraModeStack[StackIndex];
+		check(CameraMode);
+
+		OutCameraModeView.Blend(CameraMode->View, CameraMode->BlendWeight);
+	}
 }
+#pragma endregion 

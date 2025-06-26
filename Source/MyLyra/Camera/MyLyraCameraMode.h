@@ -13,10 +13,24 @@ struct FMyLyraCameraModeView
 {
 	FMyLyraCameraModeView();
 
+	void Blend(const FMyLyraCameraModeView& Other, float OtherWeight);
+
 	FVector Location = FVector::ZeroVector;
 	FRotator Rotation = FRotator::ZeroRotator;
 	FRotator ControlRotation = FRotator::ZeroRotator;
 	float FieldOfView = 0.0f;
+};
+
+// [0, 1]을 BlendFunction에 맞게 재매핑을 위한 타입
+UENUM(BlueprintType)
+enum class EMyLyraCameraModeBlendFunction : uint8
+{
+	Linear,
+	// EaseIn / Out 은 exponent 값에 의해 조절됨
+	EaseIn,
+	EaseOut,
+	EaseInOut,
+	COUNT
 };
 
 // Camera Blending 대상 유닛
@@ -62,6 +76,13 @@ public:
 	 * 앞서 BlendAlpha의 선형 값을 매핑하여 최종 BlendWeight를 계산
 	 */
 	float BlendWeight = 0.0f;
+
+	// EaseIn / Out에 사용한 Exponent
+	UPROPERTY(EditDefaultsOnly, Category = "Blending")
+	float BlendExponent = 0.0f;
+
+	// Blend function
+	EMyLyraCameraModeBlendFunction BlendFunction;
 };
 
 // Camera Blending을 담당하는 객체

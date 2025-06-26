@@ -32,6 +32,51 @@ void UMyLyraCameraComponent::GetCameraView(float DeltaTime, FMinimalViewInfo& De
 	// - 이에 대한 결과는 CameraModeView에 캐싱됨
 	FMyLyraCameraModeView CameraModeView;
 	CameraModeStack->EvaluateStack(DeltaTime, CameraModeView);
+
+	APawn* TargetPawn = Cast<APawn>(GetTargetActor());
+	if (IsValid(TargetPawn))
+	{
+		APlayerController* PC = TargetPawn->GetController<APlayerController>();
+		if (IsValid(PC))
+		{
+			// PlayerController의 ControlRotation을 계산된 CameraModeView의 ControlRotation으로 업데이트
+			// - 해당 함수는 PC가 Possess하고 있는 Pawn의 RootComponent에 ControlRotation을 반영함 ( == 조정하고 있는 캐릭터에 회전을 적용)
+			PC->SetControlRotation(CameraModeView.ControlRotation);
+		}
+	}
+
+	// Camera의 Location와 Rotation 반영
+	// - SetWorldLocationAndRotation -> UpdateChildTransform 분석 (SceneGraph 관계 업데이트 이해 가능)
+	// 정리 : CameraComponent에 대해 Parent의 SceneGraph 관계를 고려하여 업데이트 진행
+	SetWorldLocationAndRotation(CameraModeView.Location, CameraModeView.Rotation);
+
+	// FOV 업데이트
+	FieldOfView = CameraModeView.FieldOfView;
+
+	/**
+	 * ControlRotation vs Rotation 차이
+	 * - ControlRotation은 PC가 조정하는 Pawn의 Rotation을 적용하는 값
+	 * - Roatation은 Camera에 반영하는 Rotation
+	 */
+
+	// FMinimalViewInfo 업데이트
+	// - CameraComponent의 변화 사항을 반영해서 최종 렌더링까지 반영하게 됨
+	DesiredView.Location = CameraModeView.Location;
+	DesiredView.Rotation = CameraModeView.Rotation;
+	DesiredView.FOV = CameraModeView.FieldOfView;
+	DesiredView.OrthoWidth = OrthoWidth;
+	DesiredView.OrthoNearClipPlane = OrthoNearClipPlane;;
+	DesiredView.OrthoFarClipPlane = OrthoFarClipPlane;
+	DesiredView.AspectRatio = AspectRatio;
+	DesiredView.bConstrainAspectRatio = bConstrainAspectRatio;
+	DesiredView.bUseFieldOfViewForLOD = bUseFieldOfViewForLOD;
+	DesiredView.ProjectionMode = ProjectionMode;
+	DesiredView.PostProcessBlendWeight = PostProcessBlendWeight;
+
+	if (PostProcessBlendWeight > 0.0f)
+	{
+		DesiredView.PostProcessSettings = PostProcessSettings;
+	}
 }
 
 void UMyLyraCameraComponent::UpdateCameraModes()
@@ -42,7 +87,7 @@ void UMyLyraCameraComponent::UpdateCameraModes()
 	// - 해당 Delegate는 HeroComponent 의 멤버 함수로 바인딩 됨
 	if (DetermineCameraModeDelegate.IsBound())
 	{
-		const TSubclassOf<UMyLyraCameraMode> CameraMode = DetermineCameraModeDelegate.Execute();
+		TSubclassOf<UMyLyraCameraMode> CameraMode = DetermineCameraModeDelegate.Execute();
 		if (IsValid(CameraMode))
 		{
 			CameraModeStack->PushCameraMode(CameraMode);
