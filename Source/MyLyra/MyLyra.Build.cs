@@ -20,6 +20,9 @@ public class MyLyra : ModuleRules
 			// Game Features
 			"ModularGameplay",
 			"GameFeatures",
+			// Input
+			"InputCore",
+			"EnhancedInput",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

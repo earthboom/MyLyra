@@ -138,6 +138,8 @@ void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		}
 
 		// Input, Camera 핸들링
+		
+		
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 		const UMyLyraPawnData* PawnData = nullptr;
 		UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);

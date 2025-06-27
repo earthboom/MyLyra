@@ -7,6 +7,7 @@
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "MyLyraHeroComponent.generated.h"
 
+struct FMyLyraMappableConfigPair;
 class UMyLyraCameraMode;
 
 /*
@@ -40,4 +41,7 @@ public:
 	virtual void CheckDefaultInitialization() final;
 
 	TSubclassOf<UMyLyraCameraMode> DetermineCameraMode() const;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FMyLyraMappableConfigPair> DefaultInputConfigs;
 };
