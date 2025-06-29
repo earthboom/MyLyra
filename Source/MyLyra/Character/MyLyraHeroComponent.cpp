@@ -1,11 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraHeroComponent.h"
-#include "Components/GameFrameworkComponentManager.h"
+#include "MyLyraPawnData.h"
 #include "MyLyraPawnExtensionComponent.h"
+#include "PlayerMappableInputConfig.h"
+#include "MyLyra/Input/MyLyraInputComponent.h"
+#include "MyLyra/Input/MyLyraMappableConfigPair.h"
+#include "EnhancedInputSubsystems.h"
+#include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 #include "MyLyra/MyLyraLogChannels.h"
 #include "MyLyra/Camera/MyLyraCameraComponent.h"
+#include "MyLyra/Player/MyLyraPlayerController.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
 
 // FeatureName 정의
@@ -65,7 +71,7 @@ FName UMyLyraHeroComponent::GetFeatureName() const
 void UMyLyraHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
 {
 	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
-	
+
 	if (Params.FeatureName == UMyLyraPawnExtensionComponent::NAME_ActorFeatureName)
 	{
 		// MyLyraPawnExtensionComponent는 DataInitialized 상태 변화 관찰 후, MyLyraHeroComponent도 DataInitialized 상태로 변경
@@ -80,7 +86,7 @@ void UMyLyraHeroComponent::OnActorInitStateChanged(const FActorInitStateChangedP
 bool UMyLyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Manager, FGameplayTag CurrentState, FGameplayTag DesiredState) const
 {
 	check(Manager);
-	
+
 	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
 	APawn* Pawn = GetPawn<APawn>();
 	AMyLyraPlayerState* MyLyraPS = GetPlayerState<AMyLyraPlayerState>();
@@ -117,7 +123,7 @@ bool UMyLyraHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Ma
 	{
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -138,8 +144,8 @@ void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 		}
 
 		// Input, Camera 핸들링
-		
-		
+
+
 		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
 		const UMyLyraPawnData* PawnData = nullptr;
 		UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
@@ -157,6 +163,15 @@ void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &UMyLyraHeroComponent::DetermineCameraMode);
 			}
 		}
+
+		AMyLyraPlayerController* MyLyraPC = GetController<AMyLyraPlayerController>();
+		if (IsValid(MyLyraPC))
+		{
+			if (IsValid(Pawn->InputComponent))
+			{
+				InitializePlayerInput(Pawn->InputComponent);
+			}
+		}
 	}
 }
 
@@ -165,11 +180,12 @@ void UMyLyraHeroComponent::CheckDefaultInitialization()
 	// 앞서 BindOnActorInitStateChanged 에서 봤듯, Hero Feature 는 Pawn Extension Feature에 종속되어 있으므로, CheckDefaultInitializationForImplementers 을 호출하지 않음
 	// ContinueInitStateChain 은 앞서 PawnExtensionComponent와 같음
 	const FMyLyraGameplayTags& InitTags = FMyLyraGameplayTags::Get();
-	static const TArray<FGameplayTag> StateChain = { InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady};
+	static const TArray<FGameplayTag> StateChain = {InitTags.InitState_Spawned, InitTags.InitState_DataAvailable, InitTags.InitState_DataInitialized, InitTags.InitState_GameplayReady};
 	ContinueInitStateChain(StateChain);
 }
 
 PRAGMA_DISABLE_OPTIMIZATION
+
 TSubclassOf<UMyLyraCameraMode> UMyLyraHeroComponent::DetermineCameraMode() const
 {
 	const APawn* Pawn = GetPawn<APawn>();
@@ -190,4 +206,125 @@ TSubclassOf<UMyLyraCameraMode> UMyLyraHeroComponent::DetermineCameraMode() const
 
 	return nullptr;
 }
+
 PRAGMA_ENABLE_OPTIMIZATION
+
+void UMyLyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if (IsValid(Pawn) == false)
+	{
+		return;
+	}
+
+	// Local Player 접근을 위함
+	const APlayerController* PC = GetController<APlayerController>();
+	check(PC);
+
+	// EnhancedInputLocalPlayerSubsystem 접근을 위함
+	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	check(LP);
+
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
+	check(Subsystem);
+
+	// EnhancedInputLocalPlayerSubsystem에 MappingContext를 비워줌
+	Subsystem->ClearAllMappings();
+
+	// PawnExtensionComponent -> PawnData -> InputConfig Valid 체크
+	const UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+	if (IsValid(PawnExtComp))
+	{
+		const UMyLyraPawnData* PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
+		if (IsValid(PawnData))
+		{
+			const UMyLyraInputConfig* InputConfig = PawnData->InputConfig;
+			if (IsValid(InputConfig))
+			{
+				const FMyLyraGameplayTags& GameplayTags = FMyLyraGameplayTags::Get();
+
+				// HeroComponent 가지고 있는 Input Mapping Context를 순회, EnhancedInputLocalPlayerSubsystem에 추가
+				for (const FMyLyraMappableConfigPair& Pair : DefaultInputConfigs)
+				{
+					if (Pair.bShouldActivateAutomatically)
+					{
+						FModifyContextOptions Options = {};
+						Options.bIgnoreAllPressedKeysUntilRelease = false;
+
+						// 내부적으로 Input Mapping Context를 추가
+						const UPlayerMappableInputConfig* Config = Pair.Config.LoadSynchronous();
+						for (const TPair<TObjectPtr<UInputMappingContext>, int>& MappingContextPair : Config->GetMappingContexts())
+						{
+							const UInputMappingContext* MappingContext = MappingContextPair.Key;
+							const int32 Priority = MappingContextPair.Value;
+							Subsystem->AddMappingContext(MappingContext, Priority, Options);
+						}
+					}
+				}
+
+				UMyLyraInputComponent* MyLyraIC = CastChecked<UMyLyraInputComponent>(PlayerInputComponent);
+				{
+					// InputTag_Move, InputTag_look_Mouse에 대해 각각 Input_Move(), Input_LookMouse() 멤버 함수에 바인딩
+					// - 바인딩한 이후, input 이벤트에 따라 멤버 함수가 트리거 됨
+					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &UMyLyraHeroComponent::Input_Move, false);
+					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &UMyLyraHeroComponent::Input_LookMove, false);
+				}
+			}
+		}
+	}
+}
+
+void UMyLyraHeroComponent::Input_Move(const FInputActionValue& InputActionValue)
+{
+	APawn* Pawn = GetPawn<APawn>();
+	AController* Controller = Pawn ? Pawn->GetController() : nullptr;
+
+	if (IsValid(Controller))
+	{
+		const FVector2D Value = InputActionValue.Get<FVector2D>();
+		const FRotator MovementRotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+
+		if (Value.X != 0.0f)
+		{
+			// Left / Right -> X 값에 들어있음
+			// MovementDirection은 현재 카메라의 Rightvector를 의미 (World-Space)
+			const FVector MovementDirection = MovementRotation.RotateVector(FVector::RightVector);
+
+			// AddMovementInput
+			// - 내부적으로 MovementDirection * Value.X를 MovementComponent에 적용 (더하기)
+			Pawn->AddMovementInput(MovementDirection, Value.X);
+		}
+
+		if (Value.Y != 0.0f)
+		{
+			const FVector MovementDirection = MovementRotation.RotateVector(FVector::ForwardVector);
+			Pawn->AddMovementInput(MovementDirection, Value.Y);
+		}
+	}
+}
+
+void UMyLyraHeroComponent::Input_LookMove(const FInputActionValue& InputActionValue)
+{
+	APawn* Pawn = GetPawn<APawn>();
+	if (IsValid(Pawn) == false)
+	{
+		return;
+	}
+
+	const FVector2D Value = InputActionValue.Get<FVector2D>();
+	if (Value.X != 0.0f)
+	{
+		// X에 Yaw 값
+		// - Camera에 대해 Yaw 적용
+		Pawn->AddControllerYawInput(Value.X);
+	}
+
+	if (Value.Y != 0.0f)
+	{
+		// Y = Pitch
+		double AimInversionValue = -Value.Y;
+		Pawn->AddControllerPitchInput(AimInversionValue);
+	}
+}

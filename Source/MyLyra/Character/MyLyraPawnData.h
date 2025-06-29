@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "MyLyraPawnData.generated.h"
 
+class UMyLyraInputConfig;
 class UMyLyraCameraMode;
 
 /**
@@ -19,11 +20,15 @@ class MYLYRA_API UMyLyraPawnData : public UPrimaryDataAsset
 public:
 	UMyLyraPawnData(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	// Pawn class
+	// Pawn's class
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|Pawn")
 	TSubclassOf<APawn> PawnClass;
 
 	// Camera Mode
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|Camera")
 	TSubclassOf<UMyLyraCameraMode> DefaultCameraMode;
+
+	// Input configuration used by player controlled pawns to create input mappings and bind input actions
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|InputConfig")
+	TObjectPtr<UMyLyraInputConfig> InputConfig;
 };

@@ -2,9 +2,8 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "MyLyraMappableConfigPair.generated.h"
 
-// forward declaration
 class UPlayerMappableInputConfig;
 
 USTRUCT()
