@@ -23,6 +23,8 @@ public class MyLyra : ModuleRules
 			// Input
 			"InputCore",
 			"EnhancedInput",
+			// CommonUser
+			"CommonUser",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
