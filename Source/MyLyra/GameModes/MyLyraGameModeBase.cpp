@@ -4,6 +4,7 @@
 #include "MyLyraExperienceManagerComponent.h"
 #include "MyLyraGameState.h"
 #include "MyLyraExperienceDefinition.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyLyra/MyLyraLogChannels.h"
 #include "MyLyra/Character/MyLyraCharacter.h"
 #include "MyLyra/Character/MyLyraPawnData.h"
@@ -100,11 +101,19 @@ void AMyLyraGameModeBase::HandleMatchAssignmentIfNotExpectingOne()
 
 	UWorld* World = GetWorld();
 
+	// URL 과 함께 ExtraArgs로 넘겼던 정보는 OptionString에 저장되어 있음
+	if (ExperienceId.IsValid() == false && UGameplayStatics::HasOption(OptionsString, TEXT("Experience")))
+	{
+		// Experience의 Value를 가져와서, PrimaryAssetid를 생성. 이때, MyLyraExperienceDefinition의 Class 이름을 사용
+		const FString ExperienceFromOptions = UGameplayStatics::ParseOption(OptionsString, TEXT("Experience"));
+		ExperienceId = FPrimaryAssetId(FPrimaryAssetType(UMyLyraExperienceDefinition::StaticClass()->GetFName()), FName(*ExperienceFromOptions));
+	}
+
 	// fall back to the default experience
-	// 일단 기본 옵션으로 default하게 B_MyLyraDefaultExperience로 설정
+	// 일단 기본 옵션으로 Default한 설정
 	if (ExperienceId.IsValid() == false)
 	{
-		ExperienceId = FPrimaryAssetId(FPrimaryAssetType("MyLyraExperienceDefinition"), FName("B_MyLyraDefaultExperience"));
+		ExperienceId = FPrimaryAssetId(FPrimaryAssetType("MyLyraExperienceDefinition"), FName("BP_MyLyraDefaultExperience"));
 	}
 
 	OnMatchAssignmentGiven(ExperienceId);
