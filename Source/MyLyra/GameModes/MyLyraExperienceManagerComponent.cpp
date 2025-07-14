@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraExperienceManagerComponent.h"
+#include "GameFeaturesSubsystem.h"
 #include "MyLyraExperienceDefinition.h"
 #include "MyLyra/System/MyLyraAssetManager.h"
 #include "GameFeaturesSubsystemSettings.h"
@@ -124,8 +125,57 @@ void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 {
 	static int32 OnExperienceLoadComplete_FrameNumber = GFrameNumber;
 
-	// 해당 함수가 불리는 것은 앞서 보았던 StreamableDelegateDelayHelper에 의해 불림
-	OnExperienceFullLoadComplete();
+	check(LoadState == EMyLyraExperienceLoadState::Loading);
+	check(CurrentExperience);
+
+	// 이전 활성화된 GameFeature Plugin의 URL 클리어
+	GameFeaturePluginURLs.Reset();
+
+	// std::function<void(const UPrimaryDataAsset*, const TArray<FString>&)>
+	TFunction<void(const UPrimaryDataAsset*, const TArray<FString>&)> CollectGameFeaturePluginURLs = [This = this](const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
+	{
+		// FeaturePluginList를 순회하며, PluginURL을 ExperienceManagerComponent의 GameFeaturePluginURLs에 추가
+		for (const FString& PluginName : FeaturePluginList)
+		{
+			FString PluginURL;
+			if (UGameFeaturesSubsystem::Get().GetPluginURLByName(PluginName, PluginURL))
+			{
+				This->GameFeaturePluginURLs.AddUnique(PluginURL);
+			}
+		}
+	};
+
+	// GameFeaturesToEnable에 있는 Plugin만 일단 활성화할 GameFeature Plugin 후보군으로 등록
+	CollectGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeatureToEnable);
+
+	// GameFeaturePluginURLs에 등록된 Plugin을 로딩 및 활성화
+	NumGameFeaturePluginLoading = GameFeaturePluginURLs.Num();
+	if (NumGameFeaturePluginLoading)
+	{
+		LoadState = EMyLyraExperienceLoadState::LoadingGameFeatures;
+		for (const FString& PluginURL : GameFeaturePluginURLs)
+		{
+			// 매 Plugin이 로딩 및 활성화 이후, OnGameFeaturePluginLoadComplete 롤백 함수 등록
+			UGameFeaturesSubsystem::Get().LoadAndActivateGameFeaturePlugin(PluginURL, FGameFeaturePluginLoadComplete::CreateUObject(this, &ThisClass::OnGameFeaturePluginLoadComplete));
+		}
+	}
+	else
+	{
+		// 해당 함수가 불리는 것은 앞서 보았던 StreamableDelegateDelayHelper에 의해 불림
+		OnExperienceFullLoadComplete();
+	}
+}
+
+void UMyLyraExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& InResult)
+{
+	// 매 GameFeature Plugin이 로딩될 때, 해당 함수가 롤백으로 불림
+	NumGameFeaturePluginLoading--;
+	if (NumGameFeaturePluginLoading == 0)
+	{
+		// GameFeaturePlugin 로딩이 다 끝났을 경우, 기존대로 Loaded로서, OnExperienceFullLoadCompleted 호출
+		// GameFeaturePlugin 로딩과 활성화가 끝났다면? UGameFeatureAction을 활성화 해야하나?
+		OnExperienceFullLoadComplete();
+	}
 }
 
 void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
