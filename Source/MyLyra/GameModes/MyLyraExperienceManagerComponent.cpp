@@ -1,10 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraExperienceManagerComponent.h"
+#include "GameFeatureAction.h"
 #include "GameFeaturesSubsystem.h"
 #include "MyLyraExperienceDefinition.h"
 #include "MyLyra/System/MyLyraAssetManager.h"
 #include "GameFeaturesSubsystemSettings.h"
+#include "MyLyraExperienceActionSet.h"
 
 void UMyLyraExperienceManagerComponent::CallOrRegister_OnExperienceLoaded(FOnMyLyraExperienceLoaded::FDelegate&& Delegate)
 {
@@ -180,7 +182,46 @@ void UMyLyraExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE
 
 void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 {
-	check(LoadState != EMyLyraExperienceLoadState::Loaded);
+	check(LoadState != EMyLyraExperienceLoadState::Loaded)
+
+	// GameFeature Plugin 의 로딩과 활성화 이후, GameFeature Action들을 활성화
+	{
+		LoadState = EMyLyraExperienceLoadState::ExecutingActions;
+
+		// GameFeatureAction 활성화를 위한 Context 준비
+		FGameFeatureActivatingContext Context;
+		{
+			// World의 handle을 세팅
+			const FWorldContext* ExistingWorldContext = GEngine->GetWorldContextFromWorld(GetWorld());
+			if (ExistingWorldContext)
+			{
+				Context.SetRequiredWorldContextHandle(ExistingWorldContext->ContextHandle);
+			}
+		}
+
+		TFunction<void(const TArray<UGameFeatureAction*>&)> ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& InActionList)
+		{
+			for (UGameFeatureAction* Action : InActionList)
+			{
+				// 명시적으로 GameFeatureAction에 대해 Registering -> Loading -> Activating 순으로 호출
+				if (Action)
+				{
+					Action->OnGameFeatureRegistering();
+					Action->OnGameFeatureLoading();
+					Action->OnGameFeatureActivating(Context);
+				}
+			}
+		};
+
+		// 1. Experience의 Actions
+		ActivateListOfActions(CurrentExperience->Actions);
+
+		// 2. Experience의 ActionSets
+		for (const TObjectPtr<UMyLyraExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+		{
+			ActivateListOfActions(ActionSet->Actions);
+		}
+	}
 
 	LoadState = EMyLyraExperienceLoadState::Loaded;
 	OnExperienceLoaded.Broadcast(CurrentExperience);

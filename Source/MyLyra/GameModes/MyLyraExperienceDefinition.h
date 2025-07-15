@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "MyLyraExperienceDefinition.generated.h"
 
+class UMyLyraExperienceActionSet;
+class UGameFeatureAction;
 class UMyLyraPawnData;
 /**
  * 
@@ -29,4 +31,12 @@ public:
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
 	TArray<FString> GameFeatureToEnable;
+
+	/** ExperienceActionSet은 UGameFeatureAction의 Set이며, Gameplay 용도에 맞게 분류의 목적으로 사용 */
+	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
+	TArray<TObjectPtr<UMyLyraExperienceActionSet>> ActionSets;
+
+	/** 일반적인 GameFeatureAction으로서 추가 */
+	UPROPERTY(EditDefaultsOnly, Category = Action)
+	TArray<TObjectPtr<UGameFeatureAction>> Actions;
 };
