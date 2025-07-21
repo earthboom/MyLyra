@@ -180,6 +180,7 @@ void UMyLyraExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE
 	}
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
 void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 {
 	check(LoadState != EMyLyraExperienceLoadState::Loaded)
@@ -227,6 +228,7 @@ void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 	OnExperienceLoaded.Broadcast(CurrentExperience);
 	OnExperienceLoaded.Clear();
 }
+PRAGMA_ENABLE_OPTIMIZATION
 
 const UMyLyraExperienceDefinition* UMyLyraExperienceManagerComponent::GetCurrentExperienceChecked() const
 {

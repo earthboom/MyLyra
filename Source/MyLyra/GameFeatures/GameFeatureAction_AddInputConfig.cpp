@@ -4,12 +4,14 @@
 #include "EnhancedInputSubsystems.h"
 #include "PlayerMappableInputConfig.h"
 #include "Components/GameFrameworkComponentManager.h"
+#include "MyLyra/Character/MyLyraHeroComponent.h"
+
 #include UE_INLINE_GENERATED_CPP_BY_NAME(GameFeatureAction_AddInputConfig)
 
 void UGameFeatureAction_AddInputConfig::OnGameFeatureActivating(FGameFeatureActivatingContext& Context)
 {
 	FPerContextData& ActiveData = ContextData.FindOrAdd(Context);
-	if (ensure(ActiveData.ExtensionRequestHandles.IsEmpty() == false) || ensure(ActiveData.PawnsAddedTo.IsEmpty() == false))
+	if (ensure(ActiveData.ExtensionRequestHandles.IsEmpty()) == false || ensure(ActiveData.PawnsAddedTo.IsEmpty()) == false)
 	{
 		Reset(ActiveData);
 	}
@@ -34,7 +36,7 @@ void UGameFeatureAction_AddInputConfig::AddToWorld(const FWorldContext& WorldCon
 	UWorld* World = WorldContext.World();
 	UGameInstance* GameInstance = WorldContext.OwningGameInstance;
 	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
-	
+
 	if (IsValid(GameInstance) && IsValid(World) && World->IsGameWorld())
 	{
 		// GameFrameworkComponentManager을 이용해, ExtensionHandler를 추가해 등록 진행
@@ -56,7 +58,7 @@ void UGameFeatureAction_AddInputConfig::HandlePawnExtension(AActor* Actor, FName
 	APawn* AsPawn = CastChecked<APawn>(Actor);
 	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
 
-	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded)
+	if (EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded || EventName == UMyLyraHeroComponent::NAME_BindInputsNow)
 	{
 		AddInputConfig(AsPawn, ActiveData);
 	}

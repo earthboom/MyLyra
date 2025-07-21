@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "ModularCharacter.h"
 #include "MyLyraCharacter.generated.h"
 
 class UMyLyraCameraComponent;
 class UMyLyraPawnExtensionComponent;
 
 UCLASS()
-class MYLYRA_API AMyLyraCharacter : public ACharacter
+class MYLYRA_API AMyLyraCharacter : public AModularCharacter
 {
 	GENERATED_BODY()
 

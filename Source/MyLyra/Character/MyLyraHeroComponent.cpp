@@ -14,8 +14,11 @@
 #include "MyLyra/Player/MyLyraPlayerController.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
 
-// FeatureName 정의
+/** FeatureName 정의 */
 const FName UMyLyraHeroComponent::NAME_ActorFeatureName("Hero");
+
+/** InputConfig의 GameFeatureAction 활성화 ExtensionEvent 이름 */
+const FName UMyLyraHeroComponent::NAME_BindInputsNow("BindInputsNow");
 
 UMyLyraHeroComponent::UMyLyraHeroComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -274,6 +277,9 @@ void UMyLyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCom
 			}
 		}
 	}
+
+	// GameFeatureAction_AddInputConfig의 HandlePawnExtension 콜백 함수 전달
+	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(const_cast<APawn*>(Pawn), NAME_BindInputsNow);
 }
 
 void UMyLyraHeroComponent::Input_Move(const FInputActionValue& InputActionValue)
