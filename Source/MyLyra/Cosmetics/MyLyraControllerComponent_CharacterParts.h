@@ -7,6 +7,8 @@
 #include "Components/ControllerComponent.h"
 #include "MyLyraControllerComponent_CharacterParts.generated.h"
 
+class UMyLyraPawnComponent_CharacterParts;
+
 /** ControllerComponent 가 소유하는 Character Parts */
 USTRUCT()
 struct FMyLyraControllerCharacterPartEntry
@@ -33,6 +35,13 @@ class MYLYRA_API UMyLyraControllerComponent_CharacterParts : public UControllerC
 	
 public:
 	UMyLyraControllerComponent_CharacterParts(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UMyLyraPawnComponent_CharacterParts* GetPawnCustomizer() const;
+
+	UFUNCTION(BlueprintCallable, Category = Cosmetics)
+	void AddCharacterPart(const FMyLyraCharacterPart& NewPart);
+
+	void AddCharacterPartInternal(const FMyLyraCharacterPart& NewPart);
 
 	UPROPERTY(EditAnywhere, Category = Cosmetics)
 	TArray<FMyLyraControllerCharacterPartEntry> CharacterParts;

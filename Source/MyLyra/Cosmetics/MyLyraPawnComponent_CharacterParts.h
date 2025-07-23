@@ -45,6 +45,10 @@ struct FMyLyraCharacterPartList
 		: OwnerComponent(InOwnerComponent)
 	{}
 
+	bool SpawnActorForEntry(FMyLyraAppliedCharacterPartEntry& Entry);
+	
+	FMyLyraCharacterPartHandle AddEntry(FMyLyraCharacterPart NewPart);
+
 	/** 현재 Instance화된 Character Part */
 	UPROPERTY()
 	TArray<FMyLyraAppliedCharacterPartEntry> Entries;
@@ -68,6 +72,8 @@ class MYLYRA_API UMyLyraPawnComponent_CharacterParts : public UPawnComponent
 public:
 	UMyLyraPawnComponent_CharacterParts(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	FMyLyraCharacterPartHandle AddCharacterPart(const FMyLyraCharacterPart& NewPart);
+	
 	/** Instance화 된 Character Parts */
 	UPROPERTY()
 	FMyLyraCharacterPartList CharacterPartList;
