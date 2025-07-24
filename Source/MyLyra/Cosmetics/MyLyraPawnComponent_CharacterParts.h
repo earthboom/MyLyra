@@ -46,8 +46,12 @@ struct FMyLyraCharacterPartList
 	{}
 
 	bool SpawnActorForEntry(FMyLyraAppliedCharacterPartEntry& Entry);
+	void DestoryActorForEntry(FMyLyraAppliedCharacterPartEntry& Entry);
 	
 	FMyLyraCharacterPartHandle AddEntry(FMyLyraCharacterPart NewPart);
+	void RemoveEntry(FMyLyraCharacterPartHandle Handle);
+
+	FGameplayTagContainer CollectCombinedTags() const;
 
 	/** 현재 Instance화된 Character Part */
 	UPROPERTY()
@@ -72,7 +76,14 @@ class MYLYRA_API UMyLyraPawnComponent_CharacterParts : public UPawnComponent
 public:
 	UMyLyraPawnComponent_CharacterParts(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	USkeletalMeshComponent* GetParentMeshComponent() const;
+	USceneComponent* GetSceneComponentToAttachTo() const;
+	FGameplayTagContainer GetCombinedTags(FGameplayTag RequiredPrefix) const;
+
+	void BroadcastChanged();
+	
 	FMyLyraCharacterPartHandle AddCharacterPart(const FMyLyraCharacterPart& NewPart);
+	void RemoveCharacterPart(FMyLyraCharacterPartHandle Handle);
 	
 	/** Instance화 된 Character Parts */
 	UPROPERTY()

@@ -25,6 +25,9 @@ struct FMyLyraAnimBodyStyleSelectionSet
 {
 	GENERATED_BODY()
 
+	/** Gameplaytag를 통해, Mesh Rules에 따라 알맞은 BodyStyle을 반환 */
+	USkeletalMesh* SelectBestBodyStyle(const FGameplayTagContainer& CosmeticTags) const;
+
 	/** AnimLayer 적용할 SkeletalMesh를 들고 있음
 	 * - Animation - Mesh 간 Rules을 MeshRules라고 여겨라
 	 */
