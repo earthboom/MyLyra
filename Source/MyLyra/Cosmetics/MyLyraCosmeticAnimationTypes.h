@@ -7,6 +7,31 @@
 #include "MyLyraCosmeticAnimationTypes.generated.h"
 
 USTRUCT(BlueprintType)
+struct FMyLyraAnimLayerSelectionEntry
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> Layer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTagContainer RequiredTags;
+};
+
+USTRUCT(BlueprintType)
+struct FMyLyraAnimLayerSelectionSet
+{
+	GENERATED_BODY()
+
+	/** AnimInstance의 Rule을 가진 LayerRules */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FMyLyraAnimLayerSelectionEntry> LayerRules;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UAnimInstance> DefaultLayer;
+};
+
+USTRUCT(BlueprintType)
 struct FMyLyraAnimBodyStyleSelectionEntry
 {
 	GENERATED_BODY()
