@@ -33,6 +33,6 @@ void AMyLyraPlayerState::OnExperienceLoaded(const UMyLyraExperienceDefinition* C
 void AMyLyraPlayerState::SetPawnData(const UMyLyraPawnData* InPawnData)
 {
 	check(InPawnData);
-	check(PawnData == nullptr);	// PawnData가 두번 설정되는 것을 원치 않음
+	check(PawnData == nullptr); // PawnData가 두번 설정되는 것을 원치 않음
 	PawnData = InPawnData;
 }

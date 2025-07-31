@@ -51,7 +51,7 @@ UClass* AMyLyraGameModeBase::GetDefaultPawnClassForController_Implementation(ACo
 			return PawnData->PawnClass;
 		}
 	}
-	
+
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
 }
 

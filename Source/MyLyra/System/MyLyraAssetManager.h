@@ -16,7 +16,7 @@ class MYLYRA_API UMyLyraAssetManager : public UAssetManager
 
 public:
 	UMyLyraAssetManager();
-	
+
 	static UMyLyraAssetManager& Get();
 
 	// 함수가 시작하는 시점
@@ -29,15 +29,15 @@ public:
 
 	// GetAsset 은 정적 로딩으로 BP Class와 Object 로딩
 	// bKeepInMemory 가 중요
-	template<typename AssetType>
+	template <typename AssetType>
 	static AssetType* GetAsset(const TSoftObjectPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
-	template<typename AssetType>
+	template <typename AssetType>
 	static TSubclassOf<AssetType> GetSubClass(const TSoftClassPtr<AssetType>& AssetPointer, bool bKeepInMemory = true);
 
 	// [THREAD_SAFE] 메모리에 로딩된 에셋 캐싱
 	void AddLoadedAsset(const UObject* Asset);
-	
+
 	// GC 대상
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;

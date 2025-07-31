@@ -12,7 +12,7 @@ UMyLyraCameraComponent::UMyLyraCameraComponent(const FObjectInitializer& ObjectI
 void UMyLyraCameraComponent::OnRegister()
 {
 	Super::OnRegister();
-	
+
 	if (IsValid(CameraModeStack) == false)
 	{
 		// 초기화(BeginPlay 같은)가 딱히 필요없는 객체로 NewObject로 할당

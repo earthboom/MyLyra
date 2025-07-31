@@ -13,5 +13,4 @@ UCLASS()
 class MYLYRA_API UMyLyraRangedWeaponInstance : public UMyLyraWeaponInstance
 {
 	GENERATED_BODY()
-	
 };

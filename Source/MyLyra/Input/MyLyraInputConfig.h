@@ -30,7 +30,7 @@ class MYLYRA_API UMyLyraInputConfig : public UDataAsset
 
 public:
 	UMyLyraInputConfig(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
+
 	const UInputAction* FindNativeInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
 	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound = true) const;
 

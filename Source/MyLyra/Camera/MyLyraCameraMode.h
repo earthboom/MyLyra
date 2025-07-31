@@ -48,7 +48,7 @@ public:
 
 	UMyLyraCameraComponent* GetMyLyraCameraComponent() const;
 	AActor* GetTargetActor() const;
-	
+
 	FVector GetPivotLocation() const;
 	FRotator GetPivotRotation() const;
 
@@ -63,7 +63,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "View", Meta = (UIMin = "-89.9", UIMax = "89.9", CLampMin = "-89.9", ClampMax = "89.9"))
 	float ViewPitchMax = 0.0f;
-	
+
 	// 얼마 동안 Blend를 진행할지 시간을 의미
 	UPROPERTY(EditDefaultsOnly, Category = "Blending")
 	float BlendTime = 0.0f;
@@ -100,7 +100,7 @@ public:
 	void EvaluateStack(float DeltaTime, FMyLyraCameraModeView& OutCameraModeView);
 	void UpdateStack(float DeltaTime);
 	void BlendStack(FMyLyraCameraModeView& OutCameraModeView) const;
-	
+
 	// 생성된 CameraMode 관리
 	UPROPERTY()
 	TArray<TObjectPtr<UMyLyraCameraMode>> CameraModeInstance;

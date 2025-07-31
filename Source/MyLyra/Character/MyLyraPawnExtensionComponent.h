@@ -28,18 +28,18 @@ public:
 	/**
 	 * member methods
 	 */
-	static UMyLyraPawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) { return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraPawnExtensionComponent>() : nullptr);}
+	static UMyLyraPawnExtensionComponent* FindPawnExtensionComponent(const AActor* Actor) { return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraPawnExtensionComponent>() : nullptr); }
 
-	template<class T>
+	template <class T>
 	const T* GetPawnData() const;
-	
+
 	void SetPawnData(const UMyLyraPawnData* InPawnData);
 	void SetupPlayerInputComponent();
 
 	/**
 	 * UPawnComponent Interface
 	 */
-	virtual void OnRegister() override;	// 생성 초반에 호출되며, 이 단계에서 Actor에 Component를 부착하는 단계
+	virtual void OnRegister() override; // 생성 초반에 호출되며, 이 단계에서 Actor에 Component를 부착하는 단계
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 

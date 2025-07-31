@@ -14,7 +14,7 @@ void AModularCharacter::PreInitializeComponents()
 void AModularCharacter::BeginPlay()
 {
 	UGameFrameworkComponentManager::SendGameFrameworkComponentExtensionEvent(this, UGameFrameworkComponentManager::NAME_GameActorReady);
-	
+
 	Super::BeginPlay();
 }
 
@@ -22,6 +22,6 @@ void AModularCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	// Framework Component Manager에 Receiver 등록 해제
 	UGameFrameworkComponentManager::RemoveGameFrameworkComponentReceiver(this);
-	
+
 	Super::EndPlay(EndPlayReason);
 }

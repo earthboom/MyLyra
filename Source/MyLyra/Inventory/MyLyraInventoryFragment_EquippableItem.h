@@ -6,7 +6,7 @@
 #include "MyLyraInventoryItemDefinition.h"
 #include "MyLyraInventoryFragment_EquippableItem.generated.h"
 
-class UMyLyraEquipmentInstance;
+class UMyLyraEquipmentDefinition;
 
 /**
  * 
@@ -18,5 +18,5 @@ class MYLYRA_API UMyLyraInventoryFragment_EquippableItem : public UMyLyraInvento
 
 public:
 	UPROPERTY(EditAnywhere, Category = MyLyra)
-	TSubclassOf<UMyLyraInventoryItemDefinition> EquipmentDefinition;
+	TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDefinition;
 };

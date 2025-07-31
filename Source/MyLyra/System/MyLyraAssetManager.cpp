@@ -32,12 +32,14 @@ UMyLyraAssetManager& UMyLyraAssetManager::Get()
 // 원하는 부분만 디버깅이 가능하도록 할 수 있음
 // Develop 일 때도 디버깅 잡힘
 PRAGMA_DISABLE_OPTIMIZATION
+
 void UMyLyraAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 
 	FMyLyraGameplayTags::InitializeNativeTags();
 }
+
 PRAGMA_ENABLE_OPTIMIZATION
 
 bool UMyLyraAssetManager::ShouldLogAssetLoads()

@@ -18,21 +18,21 @@ UCLASS(Abstract, DefaultToInstanced, EditInlineNew)
 class UMyLyraInventoryItemFragment : public UObject
 {
 	GENERATED_BODY()
-	
+
 public:
-	
 };
 
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class MYLYRA_API UMyLyraInventoryItemDefinition : public UObject
 {
 	GENERATED_BODY()
+
 public:
 	UMyLyraInventoryItemDefinition(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
+
 	/** Inventory Item 정의(메타) 이름 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Display)
 	FText DisplayName;

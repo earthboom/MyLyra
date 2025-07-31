@@ -13,6 +13,7 @@ UCLASS(BlueprintType)
 class COMMONUSER_API UCommonSession_HostSessionRequest : public UObject
 {
 	GENERATED_BODY()
+
 public:
 	/** MapID -> Text 변환 */
 	FString GetMapName() const;
@@ -37,8 +38,11 @@ UCLASS()
 class COMMONUSER_API UCommonSessionSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
+
 public:
-	UCommonSessionSubsystem(){}
+	UCommonSessionSubsystem()
+	{
+	}
 
 	UFUNCTION(BlueprintCallable, Category = Session)
 	void HostSession(APlayerController* HostingPlayer, UCommonSession_HostSessionRequest* Request);

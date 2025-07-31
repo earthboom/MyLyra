@@ -9,7 +9,8 @@
 
 class UMyLyraCameraModeStack;
 
-template<class TClass> class TSubclassOf;
+template <class TClass>
+class TSubclassOf;
 
 DECLARE_DELEGATE_RetVal(TSubclassOf<UMyLyraCameraMode>, FMyLyraCameraModeDelegate);
 
@@ -21,10 +22,10 @@ class MYLYRA_API UMyLyraCameraComponent : public UCameraComponent
 public:
 	UMyLyraCameraComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	static UMyLyraCameraComponent* FindCameraComponent(const AActor* Actor){ return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraCameraComponent>() : nullptr); }
+	static UMyLyraCameraComponent* FindCameraComponent(const AActor* Actor) { return (IsValid(Actor) ? Actor->FindComponentByClass<UMyLyraCameraComponent>() : nullptr); }
 
 	AActor* GetTargetActor() const { return GetOwner(); }
-	
+
 	// CameraComponent Interface
 	virtual void OnRegister() final;
 	virtual void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView) override;

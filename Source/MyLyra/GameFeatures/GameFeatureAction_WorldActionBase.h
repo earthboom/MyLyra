@@ -11,6 +11,7 @@ UCLASS(Abstract)
 class UGameFeatureAction_WorldActionBase : public UGameFeatureAction
 {
 	GENERATED_BODY()
+
 public:
 	/**
 	 * UGameFeatureAction's interface
@@ -20,7 +21,7 @@ public:
 	/**
 	 * interface
 	 */
-	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) PURE_VIRTUAL(UGameFeatureAction_WorldActionBase::AddToWorld, );
+	virtual void AddToWorld(const FWorldContext& WorldContext, const FGameFeatureStateChangeContext& ChangeContext) PURE_VIRTUAL(UGameFeatureAction_WorldActionBase::AddToWorld,);
 };
 
 /**

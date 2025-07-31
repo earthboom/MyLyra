@@ -42,7 +42,7 @@ void FMyLyraCameraModeView::Blend(const FMyLyraCameraModeView& Other, float Othe
 
 	FieldOfView = FMath::Lerp(FieldOfView, Other.FieldOfView, OtherWeight);
 }
-#pragma endregion 
+#pragma endregion
 
 #pragma region UMyLyraCameraMode
 UMyLyraCameraMode::UMyLyraCameraMode(const FObjectInitializer& ObjectInitializer)
@@ -333,7 +333,7 @@ void UMyLyraCameraModeStack::BlendStack(FMyLyraCameraModeView& OutCameraModeView
 	OutCameraModeView = CameraMode->View;
 
 	// 이미 Index = [StackSize - 1] 이미 OutCamraModeView로 지정했으므로, StackSize - 2부터 순회
-	for (int32 StackIndex = (StackSize -2); StackIndex >= 0; -- StackIndex)
+	for (int32 StackIndex = (StackSize - 2); StackIndex >= 0; --StackIndex)
 	{
 		CameraMode = CameraModeStack[StackIndex];
 		check(CameraMode);
@@ -341,4 +341,4 @@ void UMyLyraCameraModeStack::BlendStack(FMyLyraCameraModeView& OutCameraModeView
 		OutCameraModeView.Blend(CameraMode->View, CameraMode->BlendWeight);
 	}
 }
-#pragma endregion 
+#pragma endregion

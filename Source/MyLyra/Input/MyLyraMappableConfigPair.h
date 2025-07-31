@@ -10,6 +10,7 @@ USTRUCT()
 struct FMyLyraMappableConfigPair
 {
 	GENERATED_BODY()
+
 public:
 	FMyLyraMappableConfigPair() = default;
 

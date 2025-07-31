@@ -16,5 +16,5 @@ void FModularGameplayActorsModule::ShutdownModule()
 }
 
 #undef LOCTEXT_NAMESPACE
-	
+
 IMPLEMENT_MODULE(FModularGameplayActorsModule, ModularGameplayActors)

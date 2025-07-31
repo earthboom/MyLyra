@@ -6,12 +6,56 @@
 #include "Components/PawnComponent.h"
 #include "MyLyraEquipmentManagerComponent.generated.h"
 
+class UMyLyraEquipmentInstance;
+class UMyLyraEquipmentDefinition;
+
+USTRUCT(BlueprintType)
+struct FMyLyraAppliedEquipmentEntry
+{
+	GENERATED_BODY()
+
+	/** 장착물에 대한 메타 데이터 */
+	UPROPERTY()
+	TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDefinition;
+
+	/** EquipmentDefinition을 통해 생성되는 인스턴스 */
+	UPROPERTY()
+	TObjectPtr<UMyLyraEquipmentInstance> Instance = nullptr;
+};
+
 /**
- * 
+ * EquipmentInstance의 인스턴스를 Entry에서 관리하고 있음
+ * - MyLyraEquipmentList는 생성된 객체를 관리한다고 보면 됨
+ */
+USTRUCT(BlueprintType)
+struct FMyLyraEquipmentList
+{
+	GENERATED_BODY()
+
+	FMyLyraEquipmentList(UActorComponent* InOwnerComponent = nullptr)
+		: OwnerComponent(InOwnerComponent)
+	{
+	}
+
+	/** 창작물에 대한 관리 리스트 */
+	UPROPERTY()
+	TArray<FMyLyraAppliedEquipmentEntry> Entries;
+
+	UPROPERTY()
+	TObjectPtr<UActorComponent> OwnerComponent;
+};
+
+/**
+ * Pawn의 Component로서 장착물에 대한 관리를 담당
  */
 UCLASS()
 class MYLYRA_API UMyLyraEquipmentManagerComponent : public UPawnComponent
 {
 	GENERATED_BODY()
-	
+
+public:
+	UMyLyraEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UPROPERTY()
+	FMyLyraEquipmentList EquipmentList;
 };

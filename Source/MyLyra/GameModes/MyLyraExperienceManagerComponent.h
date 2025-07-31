@@ -45,7 +45,7 @@ public:
 	void OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& InResult);
 	void OnExperienceFullLoadComplete();
 	const UMyLyraExperienceDefinition* GetCurrentExperienceChecked() const;
-	
+
 public:
 	UPROPERTY()
 	TObjectPtr<const UMyLyraExperienceDefinition> CurrentExperience = nullptr;

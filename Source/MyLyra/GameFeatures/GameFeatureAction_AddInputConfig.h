@@ -11,6 +11,7 @@ UCLASS()
 class UGameFeatureAction_AddInputConfig : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
+
 public:
 	/**
 	 * UGameFeatureAction Interface

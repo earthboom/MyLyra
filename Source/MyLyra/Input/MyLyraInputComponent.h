@@ -20,10 +20,10 @@ class MYLYRA_API UMyLyraInputComponent : public UEnhancedInputComponent
 public:
 	UMyLyraInputComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	template<class UserClass, typename FuncType>
+	template <class UserClass, typename FuncType>
 	void BindNativeAction(const UMyLyraInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func, bool bLogIfNotFound);
 
-	template<class UserClass, typename PressedFuncType, typename ReleaseFuncType>
+	template <class UserClass, typename PressedFuncType, typename ReleaseFuncType>
 	void BindAbilityAction(const UMyLyraInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleaseFuncType ReleaseFunc, TArray<uint32>& BindHandles);
 };
 

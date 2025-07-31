@@ -3,3 +3,7 @@
 
 #include "MyLyraEquipmentInstance.h"
 
+UMyLyraEquipmentInstance::UMyLyraEquipmentInstance(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}

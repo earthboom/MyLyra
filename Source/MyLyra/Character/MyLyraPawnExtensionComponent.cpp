@@ -61,6 +61,7 @@ void UMyLyraPawnExtensionComponent::OnRegister()
 	// 디버깅을 위한 함수
 	UGameFrameworkComponentManager* Manager = UGameFrameworkComponentManager::GetForActor(GetOwningActor());
 }
+
 PRAGMA_ENABLE_OPTIMIZATION
 
 void UMyLyraPawnExtensionComponent::BeginPlay()
@@ -102,7 +103,7 @@ FName UMyLyraPawnExtensionComponent::GetFeatureName() const
 
 void UMyLyraPawnExtensionComponent::OnActorInitStateChanged(const FActorInitStateChangedParams& Params)
 {
-	if (Params.FeatureName != NAME_ActorFeatureName)	// 나 자신은 제외함을 의미
+	if (Params.FeatureName != NAME_ActorFeatureName) // 나 자신은 제외함을 의미
 	{
 		// MyLyraPawnExtensionComponent는 다른 Feature Component들의 상태가 DataAvailable를 관찰하여, Sync를 맞추는 구간이 있었다. (CanChangeInitState)
 		// - 이를 가능케하기 위해, OnActorInitStateChanged에선 DataAvailable에 대해 지속적으로 CheckDefaultInitialization을 호출해, 상태를 확인한다.

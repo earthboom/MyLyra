@@ -10,7 +10,7 @@ class UMyLyraInventoryItemInstance;
 class UMyLyraInventoryItemDefinition;
 
 /** Inventory Item 단위 객체 */
-USTRUCT( BlueprintType)
+USTRUCT(BlueprintType)
 struct FMyLyraInventoryEntry
 {
 	GENERATED_BODY()
@@ -27,7 +27,10 @@ struct FMyLyraInventoryList
 
 	FMyLyraInventoryList(UActorComponent* InOwnerComponent = nullptr)
 		: OwnerComponent(InOwnerComponent)
-	{}
+	{
+	}
+
+	UMyLyraInventoryItemInstance* AddEntry(TSubclassOf<UMyLyraInventoryItemDefinition> ItemDef);
 
 	UPROPERTY()
 	TArray<FMyLyraInventoryEntry> Entries;
@@ -43,10 +46,14 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class MYLYRA_API UMyLyraInventoryManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
-	
+
 public:
 	UMyLyraInventoryManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
+
+	/** InventoryItemDefinition을 통해, InventoryList에 추가하여 관리하며, InventoryItemInstance를 반환 */
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	UMyLyraInventoryItemInstance* AddItemDefinition(TSubclassOf<UMyLyraInventoryItemDefinition> ItemDef);
+
 	UPROPERTY()
 	FMyLyraInventoryList InventoryList;
 };

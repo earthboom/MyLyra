@@ -24,13 +24,13 @@ public:
 
 	// GetDefaultPawnClassForController
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
-	
+
 	// HandleStartingNewPlayer
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
 
 	// SpawnDefaultPawnAtTransform
 	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
-	
+
 	void HandleMatchAssignmentIfNotExpectingOne();
 	void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId);
 	bool IsExperienceLoaded() const;
