@@ -37,6 +37,9 @@ struct FMyLyraEquipmentList
 	{
 	}
 
+	UMyLyraEquipmentInstance* AddEntry(TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDef);
+	void RemoveEntry(UMyLyraEquipmentInstance* Instance);
+
 	/** 창작물에 대한 관리 리스트 */
 	UPROPERTY()
 	TArray<FMyLyraAppliedEquipmentEntry> Entries;
@@ -56,6 +59,9 @@ class MYLYRA_API UMyLyraEquipmentManagerComponent : public UPawnComponent
 public:
 	UMyLyraEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UMyLyraEquipmentInstance* EquipItem(TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDefinition);
+	void UnequipmentItem(UMyLyraEquipmentInstance* ItemInstance);
+	
 	UPROPERTY()
 	FMyLyraEquipmentList EquipmentList;
 };

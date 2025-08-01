@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 #include "MyLyraEquipmentInstance.generated.h"
 
+struct FMyLyraEquipmentActorToSpawn;
 /**
  * 
  */
@@ -16,6 +17,22 @@ class MYLYRA_API UMyLyraEquipmentInstance : public UObject
 
 public:
 	UMyLyraEquipmentInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Equipment, meta = (DisplayName = "OnEquipped"))
+	void K2_OnEquipped();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Equipment, meta = (DisplayName = "OnEquipped"))
+	void K2_OnUnequipped();
+
+	UFUNCTION(BlueprintPure, Category = Equipment)
+	APawn* GetPawn() const;
+
+	void SpawnEquipmentActors(const TArray<FMyLyraEquipmentActorToSpawn>& ActorsToSpawn);
+	void DestroyEquipmentActors();
+
+	/** Interface */
+	virtual void OnEquipped();
+	virtual void OnUnequipped();
 
 	/** 어떤 InventoryItemInstance에 의해 활성화되었는지 (추후, QuickBarComponent와 연관 ) */
 	UPROPERTY()

@@ -6,6 +6,7 @@
 #include "Components/ControllerComponent.h"
 #include "MyLyraQuickBarComponent.generated.h"
 
+class UMyLyraEquipmentManagerComponent;
 class UMyLyraEquipmentInstance;
 class UMyLyraInventoryItemInstance;
 /**
@@ -26,8 +27,15 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UMyLyraEquipmentManagerComponent* FindEquipmentManager() const;
+	void UnequipItemInSlot();
+	void EquipItemInSlot();
+	
 	UFUNCTION(BlueprintCallable)
 	void AddItemToSlot(int32 SlotIndex, UMyLyraInventoryItemInstance* Item);
+
+	UFUNCTION(BlueprintCallable, Category = "MyLyra")
+	void SetActiveSlotIndex(int32 NewIndex);
 
 	/** HUD QuickBar Slot 개수 */
 	UPROPERTY()
