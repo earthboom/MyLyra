@@ -23,6 +23,9 @@ struct FMyLyraAnimLayerSelectionSet
 {
 	GENERATED_BODY()
 
+	/** CosmeticTags 기반해, 적절한 AnimLayer를 반환 */
+	TSubclassOf<UAnimInstance> SelectBestLayer(const FGameplayTagContainer& CosmeticTags) const;
+	
 	/** AnimInstance의 Rule을 가진 LayerRules */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FMyLyraAnimLayerSelectionEntry> LayerRules;

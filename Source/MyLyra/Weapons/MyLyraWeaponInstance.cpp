@@ -7,3 +7,9 @@ UMyLyraWeaponInstance::UMyLyraWeaponInstance(const FObjectInitializer& ObjectIni
 	: Super(ObjectInitializer)
 {
 }
+
+TSubclassOf<UAnimInstance> UMyLyraWeaponInstance::PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const
+{
+	const FMyLyraAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnequippedAnimSet);
+	return SetToQuery.SelectBestLayer(CosmeticTags);
+}
