@@ -4,6 +4,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 #include "MyLyra/MyLyraLogChannels.h"
+#include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/Character/MyLyraPawnData.h"
 
 const FName UMyLyraPawnExtensionComponent::NAME_ActorFeatureName("PawnExtension");
@@ -37,6 +38,39 @@ void UMyLyraPawnExtensionComponent::SetupPlayerInputComponent()
 {
 	// ForceUpdate로 다시 InitState 상태 변환 시작(연결 고리)
 	CheckDefaultInitialization();
+}
+
+void UMyLyraPawnExtensionComponent::InitializeAbilitySystem(UMyLyraAbilitySystemComponent* InASC, AActor* InOwnerActor)
+{
+	check(IsValid(InASC) && IsValid(InOwnerActor));
+
+	if (AbilitySystemComponent == InASC)
+	{
+		return;
+	}
+
+	if (IsValid(AbilitySystemComponent))
+	{
+		UnInitializeAbilitySystem();
+	}
+
+	APawn* Pawn = GetPawnChecked<APawn>();
+	AActor* ExistingAvatar = InASC->GetAvatarActor();
+	check(IsValid(ExistingAvatar) == false);
+
+	// ASC를 업데이트하고, InitAbilityActorInfo를 Pawn과 같이 호출하여, AvatarActor를 Pawn으로 업데이트 함
+	AbilitySystemComponent = InASC;
+	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
+}
+
+void UMyLyraPawnExtensionComponent::UnInitializeAbilitySystem()
+{
+	if (IsValid(AbilitySystemComponent) == false)
+	{
+		return;
+	}
+
+	AbilitySystemComponent = nullptr;
 }
 
 PRAGMA_DISABLE_OPTIMIZATION

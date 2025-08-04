@@ -17,6 +17,8 @@ public class MyLyra : ModuleRules
 			"EnhancedInput",
 			// GAS
 			"GameplayTags",
+			"GameplayTasks",
+			"GameplayAbilities",
 			// Game Features
 			"ModularGameplay",
 			"GameFeatures",

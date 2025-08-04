@@ -140,22 +140,34 @@ void UMyLyraHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager*
 	if (CurrentState == InitTags.InitState_DataAvailable && DesiredState == InitTags.InitState_DataInitialized)
 	{
 		APawn* Pawn = GetPawn<APawn>();
-		AMyLyraPlayerState* MyLyraState = GetPlayerState<AMyLyraPlayerState>();
-		if (ensure(Pawn && MyLyraState) == false)
+		AMyLyraPlayerState* MyLyraPS = GetPlayerState<AMyLyraPlayerState>();
+		if (ensure(Pawn && MyLyraPS) == false)
 		{
 			return;
+		}
+
+		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+		const UMyLyraPawnData* PawnData = nullptr;
+		UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+		if (IsValid(PawnExtComp))
+		{
+			PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
+
+			// DataInitialized 단계까지 오면, Pawn이 Controller에 Possess되어 준비된 상태
+			// - InitAbilityActorInfo 호출로 AvatarActor 재설정이 필요
+			PawnExtComp->InitializeAbilitySystem(MyLyraPS->GetMyLyraAbilitySystemComponent(), MyLyraPS);
 		}
 
 		// Input, Camera 핸들링
 
 
-		const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
-		const UMyLyraPawnData* PawnData = nullptr;
-		UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
-		if (PawnExtComp != nullptr)
-		{
-			PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
-		}
+		// const bool bIsLocallyControlled = Pawn->IsLocallyControlled();
+		// const UMyLyraPawnData* PawnData = nullptr;
+		// UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+		// if (PawnExtComp != nullptr)
+		// {
+		// 	PawnData = PawnExtComp->GetPawnData<UMyLyraPawnData>();
+		// }
 
 		if (bIsLocallyControlled && IsValid(PawnData))
 		{

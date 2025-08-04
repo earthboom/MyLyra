@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "MyLyraPlayerState.generated.h"
 
+class UMyLyraAbilitySystemComponent;
 class UMyLyraPawnData;
 class UMyLyraExperienceDefinition;
 /**
@@ -17,6 +18,8 @@ class MYLYRA_API AMyLyraPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+	AMyLyraPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 	// AActor's interface
 	virtual void PostInitializeComponents() final;
 
@@ -26,7 +29,11 @@ public:
 
 	void OnExperienceLoaded(const UMyLyraExperienceDefinition* CurrentExperience);
 	void SetPawnData(const UMyLyraPawnData* InPawnData);
+	UMyLyraAbilitySystemComponent* GetMyLyraAbilitySystemComponent() const { return AbilitySystemComponent; }
 
 	UPROPERTY()
 	TObjectPtr<const UMyLyraPawnData> PawnData;
+
+	UPROPERTY(VisibleAnywhere, Category = "MyLyra|PlayerState")
+	TObjectPtr<UMyLyraAbilitySystemComponent> AbilitySystemComponent;
 };

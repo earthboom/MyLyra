@@ -8,6 +8,7 @@
 #include "Components/GameFrameworkInitStateInterface.h"
 #include "MyLyraPawnExtensionComponent.generated.h"
 
+class UMyLyraAbilitySystemComponent;
 /**
  * 초기화 전반을 조정하는 Component
  * Owner의 Component들의 초기화를 중재하는 역할?
@@ -36,6 +37,10 @@ public:
 	void SetPawnData(const UMyLyraPawnData* InPawnData);
 	void SetupPlayerInputComponent();
 
+	/** AbilitySystemComponent의 AvatarActor 대상 초기화 / 해제 호출 */
+	void InitializeAbilitySystem(UMyLyraAbilitySystemComponent* InASC, AActor* InOwnerActor);
+	void UnInitializeAbilitySystem();
+
 	/**
 	 * UPawnComponent Interface
 	 */
@@ -56,6 +61,10 @@ public:
 	 */
 	UPROPERTY(EditInstanceOnly, Category = "MyLyra|Pawn")
 	TObjectPtr<const UMyLyraPawnData> PawnData;
+
+	/** AbilitySystemComponent 캐싱 */
+	UPROPERTY()
+	TObjectPtr<UMyLyraAbilitySystemComponent> AbilitySystemComponent;
 };
 
 template <class T>
