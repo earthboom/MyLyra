@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraEquipmentManagerComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "MyLyraEquipmentDefinition.h"
 #include "MyLyraEquipmentInstance.h"
+#include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 
 UMyLyraEquipmentInstance* FMyLyraEquipmentList::AddEntry(TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDef)
 {
@@ -26,6 +28,15 @@ UMyLyraEquipmentInstance* FMyLyraEquipmentList::AddEntry(TSubclassOf<UMyLyraEqui
 	NewEntry.Instance = NewObject<UMyLyraEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
+	UMyLyraAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+	check(ASC);
+	{
+		for (TObjectPtr<UMyLyraAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsGrant)
+		{
+			AbilitySet->GiveToAbilitySystem(ASC, &NewEntry.GrantedHandles, Result);
+		}
+	}
+
 	// ActorsToSpawn을 통해, Actor들을 인스턴스화
 	// - EquipmentInstance 에
 	Result->SpawnEquipmentActors(EquipmentCDO->ActorToSpawn);
@@ -41,15 +52,37 @@ void FMyLyraEquipmentList::RemoveEntry(UMyLyraEquipmentInstance* Instance)
 		FMyLyraAppliedEquipmentEntry& Entry = *EntryIt;
 		if (Entry.Instance == Instance)
 		{
+			UMyLyraAbilitySystemComponent* ASC = GetAbilitySystemComponent();
+			check(ASC);
+			{
+				// TakeFromAbilitySystem은 GiveToAbilitySystem의 반대 역할, ActivatableAbilities 를 제거
+				Entry.GrantedHandles.TakeFromAbilitySystem(ASC);
+			}
+
+			// Actor 제거 작업 및 Iterator를 통한 안전하게 Array에서 제거 진행
 			Instance->DestroyEquipmentActors();
 			EntryIt.RemoveCurrent();
 		}
 	}
 }
 
+UMyLyraAbilitySystemComponent* FMyLyraEquipmentList::GetAbilitySystemComponent() const
+{
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+
+	/**
+	 * GetAbilitySYstemComponentFromActor
+	 * - EquipmentManagerComponent는 AMyLyraCharacter를 Owner로 가짐
+	 * - 해당 함수는 IAbilitySYstemInterface를 통해 AbilitySYstemCOmponent를 반환
+	 * - MyLyraCharacter에 IAbilitySystemInterface를 상속받을 필요가 있음
+	 */
+	return Cast<UMyLyraAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor));
+}
+
 UMyLyraEquipmentManagerComponent::UMyLyraEquipmentManagerComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
-	, EquipmentList(this)
+	  , EquipmentList(this)
 {
 }
 

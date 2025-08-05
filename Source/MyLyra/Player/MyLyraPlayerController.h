@@ -6,6 +6,8 @@
 #include "ModularPlayerController.h"
 #include "MyLyraPlayerController.generated.h"
 
+class UMyLyraAbilitySystemComponent;
+class AMyLyraPlayerState;
 /**
  * 
  */
@@ -16,4 +18,10 @@ class MYLYRA_API AMyLyraPlayerController : public AModularPlayerController
 
 public:
 	AMyLyraPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	/** PlayerController Interface */
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+
+	AMyLyraPlayerState* GetMyLyraPlayerState() const;
+	UMyLyraAbilitySystemComponent* GetMyLyraAbilitySystemComponent() const;
 };

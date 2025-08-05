@@ -2,6 +2,7 @@
 
 #include "MyLyraCharacter.h"
 #include "MyLyraPawnExtensionComponent.h"
+#include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/Camera/MyLyraCameraComponent.h"
 
 // Sets default values
@@ -21,6 +22,12 @@ AMyLyraCharacter::AMyLyraCharacter()
 		CameraComponent = CreateDefaultSubobject<UMyLyraCameraComponent>(TEXT("CameraComponent"));
 		CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
 	}
+}
+
+UAbilitySystemComponent* AMyLyraCharacter::GetAbilitySystemComponent() const
+{
+	// 캐싱한 PawnExtensionComponent 를 이용
+	return PawnExtensionComponent->GetMyLyraAbilitySystemComponent();
 }
 
 // Called when the game starts or when spawned

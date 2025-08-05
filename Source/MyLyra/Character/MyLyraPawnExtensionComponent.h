@@ -37,6 +37,8 @@ public:
 	void SetPawnData(const UMyLyraPawnData* InPawnData);
 	void SetupPlayerInputComponent();
 
+	UMyLyraAbilitySystemComponent* GetMyLyraAbilitySystemComponent() const { return AbilitySystemComponent; }
+
 	/** AbilitySystemComponent의 AvatarActor 대상 초기화 / 해제 호출 */
 	void InitializeAbilitySystem(UMyLyraAbilitySystemComponent* InASC, AActor* InOwnerActor);
 	void UnInitializeAbilitySystem();

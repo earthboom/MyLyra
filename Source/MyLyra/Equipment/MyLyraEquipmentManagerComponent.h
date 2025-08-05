@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/PawnComponent.h"
+#include "MyLyra/AbilitySystem/MyLyraAbilitySet.h"
 #include "MyLyraEquipmentManagerComponent.generated.h"
 
 class UMyLyraEquipmentInstance;
@@ -21,6 +22,10 @@ struct FMyLyraAppliedEquipmentEntry
 	/** EquipmentDefinition을 통해 생성되는 인스턴스 */
 	UPROPERTY()
 	TObjectPtr<UMyLyraEquipmentInstance> Instance = nullptr;
+
+	/** 무기에 할당된 허용 가능한 GameplayAbility */
+	UPROPERTY()
+	FMyLyraAbilitySet_GrantedHandles GrantedHandles;
 };
 
 /**
@@ -39,6 +44,8 @@ struct FMyLyraEquipmentList
 
 	UMyLyraEquipmentInstance* AddEntry(TSubclassOf<UMyLyraEquipmentDefinition> EquipmentDef);
 	void RemoveEntry(UMyLyraEquipmentInstance* Instance);
+
+	UMyLyraAbilitySystemComponent* GetAbilitySystemComponent() const;
 
 	/** 창작물에 대한 관리 리스트 */
 	UPROPERTY()

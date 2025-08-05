@@ -33,7 +33,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|InputConfig")
 	TObjectPtr<UMyLyraInputConfig> InputConfig;
 
-	/** 해당 Pawn의 Ability System에 허용할 AbilitySet */
+	/**
+	 * 해당 Pawn의 Ability System에 허용할 AbilitySet
+	 * - 공용으로 사용할 스킬들 (점프, 앉기, 벽타기 등등)
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|Abilities")
 	TArray<TObjectPtr<UMyLyraAbilitySet>> AbilitySets;
 };

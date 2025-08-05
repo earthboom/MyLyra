@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "ModularCharacter.h"
 #include "MyLyraCharacter.generated.h"
 
@@ -10,13 +11,16 @@ class UMyLyraCameraComponent;
 class UMyLyraPawnExtensionComponent;
 
 UCLASS()
-class MYLYRA_API AMyLyraCharacter : public AModularCharacter
+class MYLYRA_API AMyLyraCharacter : public AModularCharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	AMyLyraCharacter();
+
+	/** IAbilitySystemInterface*/
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 protected:
 	// Called when the game starts or when spawned

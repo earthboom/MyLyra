@@ -48,6 +48,8 @@ public:
 	void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 	void Input_Move(const FInputActionValue& InputActionValue);
 	void Input_LookMove(const FInputActionValue& InputActionValue);
+	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 
 	UPROPERTY(EditAnywhere)
 	TArray<FMyLyraMappableConfigPair> DefaultInputConfigs;

@@ -16,4 +16,13 @@ class MYLYRA_API UMyLyraAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	UMyLyraAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
+
+	/** Ability Input 처리할 Pending Queue */
+	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;		// 눌렀을 때
+	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;	// 땠을 때
+	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;		// 누르는 동안
 };

@@ -6,4 +6,5 @@
 UMyLyraGameplayAbility::UMyLyraGameplayAbility(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	ActivationPolicy = EMyLyraAbilityActivationPolicy::OnInputTrigger;
 }

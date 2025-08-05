@@ -12,6 +12,23 @@ void FMyLyraAbilitySet_GrantedHandles::AddAbilitySpecHande(const FGameplayAbilit
 	}
 }
 
+void FMyLyraAbilitySet_GrantedHandles::TakeFromAbilitySystem(UMyLyraAbilitySystemComponent* MyLyraASC)
+{
+	if (MyLyraASC->IsOwnerActorAuthoritative() == false)
+	{
+		return;
+	}
+
+	for (const FGameplayAbilitySpecHandle& Handle : AbilitySpecHandles)
+	{
+		if (Handle.IsValid())
+		{
+			// ActivatableAbilities 를 제거
+			MyLyraASC->ClearAbility(Handle);
+		}
+	}
+}
+
 UMyLyraAbilitySet::UMyLyraAbilitySet(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {

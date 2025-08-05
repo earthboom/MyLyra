@@ -40,7 +40,7 @@ struct FMyLyraAbilitySet_GrantedHandles
 	GENERATED_BODY()
 
 	void AddAbilitySpecHande(const FGameplayAbilitySpecHandle& Handle);
-	// void TakeFromAbilitySystem(UMyLyraAbilitySystemComponent* MyLyraASC);
+	void TakeFromAbilitySystem(UMyLyraAbilitySystemComponent* MyLyraASC);
 
 protected:
 	/** 허용된 GameplayAbilitySpecHandle (int32) */

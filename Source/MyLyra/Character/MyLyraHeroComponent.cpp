@@ -10,6 +10,7 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 #include "MyLyra/MyLyraLogChannels.h"
+#include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/Camera/MyLyraCameraComponent.h"
 #include "MyLyra/Player/MyLyraPlayerController.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
@@ -281,10 +282,15 @@ void UMyLyraHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 				UMyLyraInputComponent* MyLyraIC = CastChecked<UMyLyraInputComponent>(PlayerInputComponent);
 				{
+					{
+						TArray<uint32> BindHandles;
+						MyLyraIC->BindAbilityAction(InputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, BindHandles);
+					}
+
 					// InputTag_Move, InputTag_look_Mouse에 대해 각각 Input_Move(), Input_LookMouse() 멤버 함수에 바인딩
 					// - 바인딩한 이후, input 이벤트에 따라 멤버 함수가 트리거 됨
-					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &UMyLyraHeroComponent::Input_Move, false);
-					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &UMyLyraHeroComponent::Input_LookMove, false);
+					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move, false);
+					MyLyraIC->BindNativeAction(InputConfig, GameplayTags.InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &ThisClass::Input_LookMove, false);
 				}
 			}
 		}
@@ -344,5 +350,39 @@ void UMyLyraHeroComponent::Input_LookMove(const FInputActionValue& InputActionVa
 		// Y = Pitch
 		double AimInversionValue = -Value.Y;
 		Pawn->AddControllerPitchInput(AimInversionValue);
+	}
+}
+
+void UMyLyraHeroComponent::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	if (IsValid(Pawn))
+	{
+		const UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+		if (IsValid(PawnExtComp))
+		{
+			UMyLyraAbilitySystemComponent* MyLyraASC = PawnExtComp->GetMyLyraAbilitySystemComponent();
+			if (IsValid(MyLyraASC))
+			{
+				MyLyraASC->AbilityInputTagPressed(InputTag);
+			}
+		}
+	}
+}
+
+void UMyLyraHeroComponent::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+{
+	const APawn* Pawn = GetPawn<APawn>();
+	if (IsValid(Pawn))
+	{
+		const UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(Pawn);
+		if (IsValid(PawnExtComp))
+		{
+			UMyLyraAbilitySystemComponent* MyLyraASC = PawnExtComp->GetMyLyraAbilitySystemComponent();
+			if (IsValid(MyLyraASC))
+			{
+				MyLyraASC->AbilityInputTagReleased(InputTag);
+			}
+		}
 	}
 }
