@@ -112,3 +112,25 @@ void UMyLyraEquipmentManagerComponent::UnequipmentItem(UMyLyraEquipmentInstance*
 		EquipmentList.RemoveEntry(ItemInstance);
 	}
 }
+
+TArray<UMyLyraEquipmentInstance*> UMyLyraEquipmentManagerComponent::GetEquipmentInstanceofType(TSubclassOf<UMyLyraEquipmentInstance> InstanceType) const
+{
+	TArray<UMyLyraEquipmentInstance*> Results;
+
+	// EquipmentList 순회
+	for (const FMyLyraAppliedEquipmentEntry& Entry : EquipmentList.Entries)
+	{
+		UMyLyraEquipmentInstance* Instance = Entry.Instance;
+		if (IsValid(Instance))
+		{
+			// InstanceType에 맞는 Class이면 Results에 추가
+			// - MyLyraRangedWeaponInstance
+			if (Instance->IsA(InstanceType))
+			{
+				Results.Add(Instance);
+			}
+		}
+	}
+
+	return Results;
+}

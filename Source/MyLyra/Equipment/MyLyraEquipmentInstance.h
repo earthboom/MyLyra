@@ -25,6 +25,9 @@ public:
 	void K2_OnUnequipped();
 
 	UFUNCTION(BlueprintPure, Category = Equipment)
+	TArray<AActor*> GetSpawnedActor() const { return SpawnedActors;}
+	
+	UFUNCTION(BlueprintPure, Category = Equipment)
 	APawn* GetPawn() const;
 
 	void SpawnEquipmentActors(const TArray<FMyLyraEquipmentActorToSpawn>& ActorsToSpawn);
