@@ -74,9 +74,9 @@ void UMyLyraGameplayAbility_RangedWeapon::PerformLocalTargeting(TArray<FHitResul
 		// - GetUnitAxis()를 살펴보자
 		InputData.AimDir = TargetTransform.GetUnitAxis(EAxis::X);
 		InputData.StartTrace = TargetTransform.GetTranslation();
-		InputData.EndAim = InputData.StartTrace + InputData.AimDir + WeaponData->MaxDamageRange;
+		InputData.EndAim = InputData.StartTrace + InputData.AimDir * WeaponData->MaxDamageRange;
 
-#if 1
+#if 0
 		{
 			static float DebugThickness = 2.0f;
 			DrawDebugLine(GetWorld(), InputData.StartTrace, InputData.StartTrace + (InputData.AimDir * 100.0f), FColor::Yellow, false, DebugThickness);
@@ -278,6 +278,7 @@ FHitResult UMyLyraGameplayAbility_RangedWeapon::WeaponTrace(const FVector& Start
 
 	// Complex Geometry로 Trace를 진행하며, AvatarActor를 AttachParent를 가지는 오브젝트와의 충돌은 무시
 	FCollisionQueryParams TraceParams(SCENE_QUERY_STAT(WeaponTrac), /*bTraceComplex*/true, /*IgnoreActor=*/GetAvatarActorFromActorInfo());
+	TraceParams.bReturnPhysicalMaterial = true;
 
 	// AvatarActor에 부착된 Actors를 찾아 IgnoredActors에 추가
 	AddAdditionalTraceIgnoreActors(TraceParams);
