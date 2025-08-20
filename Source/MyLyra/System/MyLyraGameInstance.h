@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CommonGameInstance.h"
 #include "Engine/GameInstance.h"
 #include "MyLyraGameInstance.generated.h"
 
@@ -10,7 +11,7 @@
  * 
  */
 UCLASS()
-class MYLYRA_API UMyLyraGameInstance : public UGameInstance
+class MYLYRA_API UMyLyraGameInstance : public UCommonGameInstance
 {
 	GENERATED_BODY()
 

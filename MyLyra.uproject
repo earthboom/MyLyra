@@ -13,7 +13,8 @@
 				"ModularGameplay",
 				"CoreUObject",
 				"EnhancedInput",
-				"GameplayAbilities"
+				"GameplayAbilities",
+				"CommonGame"
 			]
 		}
 	],
@@ -53,9 +54,9 @@
 			"Name": "CommonUI",
 			"Enabled": true
 		},
-        {
-          "Name": "CommonGame",
-          "Enabled": true
-        }
+		{
+			"Name": "CommonGame",
+			"Enabled": true
+		}
 	]
 }
