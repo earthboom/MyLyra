@@ -34,6 +34,8 @@ public class MyLyra : ModuleRules
 			"CommonUI",
 			// UMG
 			"UMG",
+			// UIExtension
+			"UIExtension",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
