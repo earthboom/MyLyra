@@ -14,7 +14,8 @@
 				"CoreUObject",
 				"EnhancedInput",
 				"GameplayAbilities",
-				"CommonGame"
+				"CommonGame",
+				"CommonUI"
 			]
 		}
 	],
@@ -57,6 +58,10 @@
 		{
 			"Name": "CommonGame",
 			"Enabled": true
-		}
+		},
+        {
+            "Name": "UIExtension",
+            "Enabled": true
+        }
 	]
 }

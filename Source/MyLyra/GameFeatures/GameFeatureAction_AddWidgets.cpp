@@ -84,8 +84,6 @@ void UGameFeatureAction_AddWidgets::AddToWorld(const FWorldContext& WorldContext
 			ActiveData.ComponentRequests.Add(ExtensionRequestHandle);
 		}
 	}
-
-	Super::AddToWorld(WorldContext, ChangeContext);
 }
 
 void UGameFeatureAction_AddWidgets::HandleActorExtension(AActor* Actor, FName EventName, FGameFeatureStateChangeContext ChangeContext)

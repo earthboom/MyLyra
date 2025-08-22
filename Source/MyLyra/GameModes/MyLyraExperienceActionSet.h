@@ -18,6 +18,10 @@ class MYLYRA_API UMyLyraExperienceActionSet : public UPrimaryDataAsset
 public:
 	UMyLyraExperienceActionSet();
 
+#if WITH_EDITORONLY_DATA
+	virtual void UpdateAssetBundleData() override;
+#endif
+
 	/**
 	 *	member variables
 	 */

@@ -11,6 +11,7 @@
 #include "MyLyra/Character/MyLyraPawnExtensionComponent.h"
 #include "MyLyra/Player/MyLyraPlayerController.h"
 #include "MyLyra/Player/MyLyraPlayerState.h"
+#include "MyLyra/UI/MyLyraHUD.h"
 
 AMyLyraGameModeBase::AMyLyraGameModeBase()
 {
@@ -18,6 +19,7 @@ AMyLyraGameModeBase::AMyLyraGameModeBase()
 	PlayerControllerClass = AMyLyraPlayerController::StaticClass();
 	PlayerStateClass = AMyLyraPlayerState::StaticClass();
 	DefaultPawnClass = AMyLyraCharacter::StaticClass();
+	HUDClass = AMyLyraHUD::StaticClass();
 }
 
 void AMyLyraGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)

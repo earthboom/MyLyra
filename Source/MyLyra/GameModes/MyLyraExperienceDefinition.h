@@ -20,6 +20,10 @@ class UMyLyraExperienceDefinition : public UPrimaryDataAsset
 public:
 	UMyLyraExperienceDefinition(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+#if WITH_EDITORONLY_DATA
+	virtual void UpdateAssetBundleData() override;
+#endif
+	
 	/** member variables */
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
 	TObjectPtr<UMyLyraPawnData> DefaultPawnData;
@@ -37,6 +41,6 @@ public:
 	TArray<TObjectPtr<UMyLyraExperienceActionSet>> ActionSets;
 
 	/** 일반적인 GameFeatureAction으로서 추가 */
-	UPROPERTY(EditDefaultsOnly, Category = Action)
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = Action)
 	TArray<TObjectPtr<UGameFeatureAction>> Actions;
 };

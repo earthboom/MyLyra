@@ -76,6 +76,17 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 	TSet<FPrimaryAssetId> BundleAssetList;
 	BundleAssetList.Add(CurrentExperience->GetPrimaryAssetId());
 
+	// ExperienceActionSet 순회하며, BundleAssetList로 추가
+	for (const TObjectPtr<UMyLyraExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+	{
+		if (IsValid(ActionSet))
+		{
+			// 앞서 생성한 HAS_Shooter_SharedHUD가 추가됨
+			// - BundleAssetList는 Bundle로 등록할 Root의 PrimaryDataAsset을 추가하는 과정 (ChangeBundleStateForPrimaryAssets 참고)
+			BundleAssetList.Add(ActionSet->GetPrimaryAssetId());
+		}
+	}
+	
 	/**
 	 * Load Assets associated with the experience
 	 * 후일 GameFeature를 사용해, Experience에 바인됭된 GameFeature Plugin을 로딩할 Bundle 이름을 추가
@@ -85,8 +96,8 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 	{
 		// OwnerNetMode 가 NM_Standalone이면 ? Client / Server 둘 다 로딩이 추가됨
 		const ENetMode OwnerNetMode = GetOwner()->GetNetMode();
-		bool bLoadClient = GIsEditor || (OwnerNetMode != NM_DedicatedServer);
-		bool bLoadServer = GIsEditor || (OwnerNetMode != NM_Client);
+		const bool bLoadClient = GIsEditor || (OwnerNetMode != NM_DedicatedServer);
+		const bool bLoadServer = GIsEditor || (OwnerNetMode != NM_Client);
 
 		if (bLoadClient)
 		{

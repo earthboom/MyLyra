@@ -2,6 +2,7 @@
 
 #include "UIExtensionSystem.h"
 #include "Blueprint/UserWidget.h"
+#include UE_INLINE_GENERATED_CPP_BY_NAME(UIExtensionSystem)
 
 void FUIExtensionHandle::Unregister()
 {
@@ -15,7 +16,7 @@ void UUIExtensionSubsystem::UnregisterExtension(const FUIExtensionHandle& Extens
 {
 	if (ExtensionHandle.IsValid())
 	{
-		// 반드시 해당 ExtensionHandle이 UUIExtensionSubsystemㅗ가 같은지 확인해야 함
+		// 반드시 해당 ExtensionHandle이 UUIExtensionSubsystem과 같은지 확인해야 함
 		checkf(ExtensionHandle.ExtensionSource == this, TEXT("Trying to unregister an extension that's not from this extension subsystem"));
 
 		TSharedPtr<FUIExtension> Extension = ExtensionHandle.DataPtr;
@@ -27,7 +28,7 @@ void UUIExtensionSubsystem::UnregisterExtension(const FUIExtensionHandle& Extens
 			ListPtr->RemoveSwap(Extension);
 			if (ListPtr->Num() == 0)
 			{
-				// 0이면 Map에서도 제거
+				// Num() == 0이면 Map에서도 제거 진행
 				ExtensionMap.Remove(Extension->ExtensionPointTag);
 			}
 		}
@@ -36,7 +37,7 @@ void UUIExtensionSubsystem::UnregisterExtension(const FUIExtensionHandle& Extens
 
 FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsWidgetForContext(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, TSubclassOf<UUserWidget> WidgetClass, int32 Priority)
 {
-	return RegisterExtensionAsData(ExtensionPointTag, ContextObject, WidgetClass,Priority);
+	return RegisterExtensionAsData(ExtensionPointTag, ContextObject, WidgetClass, Priority);
 }
 
 FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsData(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, UObject* Data, int32 Priority)
