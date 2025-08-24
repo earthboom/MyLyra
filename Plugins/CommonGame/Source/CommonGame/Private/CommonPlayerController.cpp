@@ -3,6 +3,11 @@
 #include "CommonPlayerController.h"
 #include "CommonLocalPlayer.h"
 
+ACommonPlayerController::ACommonPlayerController(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}
+
 void ACommonPlayerController::ReceivedPlayer()
 {
 	// PlayerController가 LocalPlayer에 붙으면서 활성화되는 이벤트 함수가 ReceivedPlayer!!

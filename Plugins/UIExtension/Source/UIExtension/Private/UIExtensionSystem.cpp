@@ -43,7 +43,7 @@ FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsWidgetForContext(co
 FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsData(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, UObject* Data, int32 Priority)
 {
 	// ExtensionPointTag(Slot)이 Invalid
-	if (ExtensionPointTag.IsValid())
+	if (ExtensionPointTag.IsValid() == false)
 	{
 		return FUIExtensionHandle();
 	}

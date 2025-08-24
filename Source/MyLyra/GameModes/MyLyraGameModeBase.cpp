@@ -147,7 +147,7 @@ void AMyLyraGameModeBase::OnExperienceLoaded(const UMyLyraExperienceDefinition* 
 		APlayerController* PC = Cast<APlayerController>(*Iterator);
 
 		// PlayerController가 Pawn을 Possess하지 않았다면, RestartPlayer를 통해 Pawn을 다시 Spawn
-		if (PC && PC->GetPawn() == nullptr)
+		if (IsValid(PC) && PC->GetPawn() == nullptr)
 		{
 			if (PlayerCanRestart(PC))
 			{

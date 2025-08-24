@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFeatureAction_WorldActionBase.h"
+#include "CommonActivatableWidget.h"
 #include "GameplayTagContainer.h"
 #include "UIExtensionSystem.h"
+#include "GameFeatureAction_WorldActionBase.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFeatureAction_AddWidgets.generated.h"
 
+struct FWorldContext;
 class UCommonActivatableWidget;
 
 /** HUD의 Layout 요청 */

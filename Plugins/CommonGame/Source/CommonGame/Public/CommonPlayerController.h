@@ -15,5 +15,7 @@ class COMMONGAME_API ACommonPlayerController : public AModularPlayerController
 	GENERATED_BODY()
 
 public:
+	ACommonPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	virtual void ReceivedPlayer() override;
 };

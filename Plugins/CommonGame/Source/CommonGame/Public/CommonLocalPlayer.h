@@ -15,6 +15,8 @@ class COMMONGAME_API UCommonLocalPlayer : public ULocalPlayer
 	GENERATED_BODY()
 
 public:
+	UCommonLocalPlayer();
+
 	/** Player Controller가 Local Player에 할당(Assign)되었을 때 실행할 Delegate */
 	DECLARE_MULTICAST_DELEGATE_TwoParams(FPlayerControllerSetDelegate, UCommonLocalPlayer* LocalPlayer, APlayerController* PlayerController);
 	FPlayerControllerSetDelegate OnPlayerControllerSet;

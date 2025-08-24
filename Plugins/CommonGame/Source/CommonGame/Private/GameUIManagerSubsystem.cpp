@@ -4,6 +4,7 @@
 #include "GameUIPolicy.h"
 
 UGameUIManagerSubsystem::UGameUIManagerSubsystem()
+	: Super()
 {
 }
 

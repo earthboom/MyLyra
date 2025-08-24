@@ -3,6 +3,12 @@
 #include "CommonGameInstance.h"
 #include "CommonLocalPlayer.h"
 #include "GameUIManagerSubsystem.h"
+#include UE_INLINE_GENERATED_CPP_BY_NAME(CommonGameInstance)
+
+UCommonGameInstance::UCommonGameInstance(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}
 
 int32 UCommonGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, int32 ControllerId)
 {
@@ -31,6 +37,5 @@ bool UCommonGameInstance::RemoveLocalPlayer(ULocalPlayer* ExistingPlayer)
 	}
 
 	GetSubsystem<UGameUIManagerSubsystem>()->NotifyPlayerDestroyed(Cast<UCommonLocalPlayer>(ExistingPlayer));
-
 	return Super::RemoveLocalPlayer(ExistingPlayer);
 }

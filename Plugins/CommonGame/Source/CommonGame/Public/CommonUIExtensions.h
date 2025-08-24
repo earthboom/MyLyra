@@ -17,7 +17,7 @@ class COMMONGAME_API UCommonUIExtensions : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
-	UCommonUIExtensions(){}
+	UCommonUIExtensions() {}
 
 	static UCommonActivatableWidget* PushContentToLayer_ForPlayer(const ULocalPlayer* LocalPlayer, FGameplayTag LayerName, TSubclassOf<UCommonActivatableWidget> WidgetClass);
 };

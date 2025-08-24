@@ -8,7 +8,6 @@
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "PrimaryGameLayout.generated.h"
 
-class UCommonActivatableWidget;
 class UCommonActivatableWidgetContainerBase;
 /**
  * 

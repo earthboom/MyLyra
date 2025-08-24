@@ -47,15 +47,16 @@ class COMMONGAME_API UGameUIPolicy : public UObject
 
 public:
 	UPrimaryGameLayout* GetRootLayout(const UCommonLocalPlayer* LocalPlayer) const;
+
 	TSubclassOf<UPrimaryGameLayout> GetLayoutWidgetClass(UCommonLocalPlayer* LocalPlayer);
-	
 	void CreateLayoutWidget(UCommonLocalPlayer* LocalPlayer);
+
 	void AddLayoutToViewport(UCommonLocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout);
 	void RemoveLayoutFromViewport(UCommonLocalPlayer* LocalPlayer, UPrimaryGameLayout* Layout);
 
-	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
-	virtual void NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlayer);
-	virtual void NotifyPlayerDestroyed(UCommonLocalPlayer* LocalPlayer);
+	void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
+	void NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlayer);
+	void NotifyPlayerDestroyed(UCommonLocalPlayer* LocalPlayer);
 
 public:
 	/** LocalPlayer에 바인딩된 UI Layout */

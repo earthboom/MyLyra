@@ -16,7 +16,7 @@ void UMyLyraGameInstance::Init()
 		// 공식문서에서 RegisterInitState는 GameInstance initializezation에서 수행해라고 명시되어 있음
 		ComponentManager->RegisterInitState(GameplayTags.InitState_Spawned, false, FGameplayTag());
 		ComponentManager->RegisterInitState(GameplayTags.InitState_DataAvailable, false, GameplayTags.InitState_Spawned);
-		ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_Spawned);
+		ComponentManager->RegisterInitState(GameplayTags.InitState_DataInitialized, false, GameplayTags.InitState_DataAvailable);
 		ComponentManager->RegisterInitState(GameplayTags.InitState_GameplayReady, false, GameplayTags.InitState_DataInitialized);
 	}
 }

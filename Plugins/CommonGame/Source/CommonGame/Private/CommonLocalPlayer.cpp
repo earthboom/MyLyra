@@ -3,3 +3,7 @@
 
 #include "CommonLocalPlayer.h"
 
+UCommonLocalPlayer::UCommonLocalPlayer()
+	: Super(FObjectInitializer::Get())
+{
+}

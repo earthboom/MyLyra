@@ -15,6 +15,8 @@ class COMMONGAME_API UCommonGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UCommonGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	virtual int32 AddLocalPlayer(ULocalPlayer* NewPlayer, int32 ControllerId) override;
 	virtual bool RemoveLocalPlayer(ULocalPlayer* ExistingPlayer) override;
 

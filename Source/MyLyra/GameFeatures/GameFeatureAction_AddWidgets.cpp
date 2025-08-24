@@ -3,6 +3,7 @@
 #include "GameFeatureAction_AddWidgets.h"
 #include "CommonActivatableWidget.h"
 #include "CommonUIExtensions.h"
+#include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/UI/MyLyraHUD.h"
 
 void UGameFeatureAction_AddWidgets::AddWidgets(AActor* Actor, FPerContextData& ActiveData)
