@@ -8,6 +8,7 @@
 #include "Components/DynamicEntryBoxBase.h"
 #include "UIExtensionPointWidget.generated.h"
 
+class UCommonLocalPlayer;
 /**
  * UIExntesionPointWIdget은 UIExtension 하나 단위로 생각
  * - UIExtension에 결합된 Cntext 별로 관리하는 객체가 UIExtensionPoint(Handle)
@@ -23,8 +24,16 @@ class UIEXTENSION_API UUIExtensionPointWidget : public UDynamicEntryBoxBase
 public:
 	UUIExtensionPointWidget(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	void ResetExtensionPoint();
+	void RegisterExtensionPoint();
+	void RegisterExtensionPointForPlayerState(UCommonLocalPlayer* LocalPlayer, APlayerState* PlayerState);
+	void OnAddOrRemoveExtension(EUIExtensionAction Action, const FUIExtensionRequest& Request);
+
+	/** UWidget's interface */
+	virtual TSharedRef<SWidget> RebuildWidget() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI Extension")
-	FGameplayTag ExtensionPaintTag;
+	FGameplayTag ExtensionPointTag;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI Extension")
 	EUIExtensionPointMatch ExtensionPointTagMatch = EUIExtensionPointMatch::ExactMatch;

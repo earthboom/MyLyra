@@ -16,8 +16,7 @@ bool FUIExtensionPoint::DoesExtensionPassContract(const FUIExtension* Extension)
 {
 	if (UObject* DataPtr = Extension->Data)
 	{
-		const bool bMatchContext =
-		(ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull() ||
+		const bool bMatchContext = (ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull() ||
 			(ContextObject == Extension->ContextObject));
 
 		if (bMatchContext)
