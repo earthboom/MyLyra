@@ -113,6 +113,22 @@ void UMyLyraEquipmentManagerComponent::UnequipmentItem(UMyLyraEquipmentInstance*
 	}
 }
 
+UMyLyraEquipmentInstance* UMyLyraEquipmentManagerComponent::GetFirstInstanceOfType(TSubclassOf<UMyLyraEquipmentInstance> InstanceType)
+{
+	for (FMyLyraAppliedEquipmentEntry& Entry : EquipmentList.Entries)
+	{
+		if (UMyLyraEquipmentInstance* Instance = Entry.Instance)
+		{
+			if (Instance->IsA(InstanceType))
+			{
+				return Instance;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 TArray<UMyLyraEquipmentInstance*> UMyLyraEquipmentManagerComponent::GetEquipmentInstanceofType(TSubclassOf<UMyLyraEquipmentInstance> InstanceType) const
 {
 	TArray<UMyLyraEquipmentInstance*> Results;

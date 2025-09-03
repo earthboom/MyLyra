@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayAbilitySpecHandle.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "MyLyraAbilitySet.generated.h"
 
-struct FGameplayAbilitySpecHandle;
 class UMyLyraAbilitySystemComponent;
 class UMyLyraGameplayAbility;
 

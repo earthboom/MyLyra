@@ -12,7 +12,7 @@ class UMyLyraInventoryItemDefinition;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class MYLYRA_API UMyLyraInventoryItemInstance : public UObject
 {
 	GENERATED_BODY()
@@ -20,6 +20,7 @@ class MYLYRA_API UMyLyraInventoryItemInstance : public UObject
 public:
 	UMyLyraInventoryItemInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, meta = (DeterminesOutputType = FragmentClass))
 	const UMyLyraInventoryItemFragment* FindFragmentByClass(TSubclassOf<UMyLyraInventoryItemFragment> FragmentClass) const;
 
 	template <typename ResultClass>

@@ -25,8 +25,11 @@ public:
 	void K2_OnUnequipped();
 
 	UFUNCTION(BlueprintPure, Category = Equipment)
-	TArray<AActor*> GetSpawnedActors() const { return SpawnedActors;}
-	
+	TArray<AActor*> GetSpawnedActors() const { return SpawnedActors; }
+
+	UFUNCTION(BlueprintPure, Category = Equipment)
+	UObject* GetInstigator() const { return Instigator; }
+
 	UFUNCTION(BlueprintPure, Category = Equipment)
 	APawn* GetPawn() const;
 
@@ -37,8 +40,8 @@ public:
 	 * DetermineOutPutType은 C++ 정의에는 APawn* 반환하지만, BP에선 PawnType에 따라 OutputType이 결정되도록 Redirect
 	 */
 	UFUNCTION(BlueprintPure, Category = Equipment, meta = (DeterminesOutputType = PawnType))
-	APawn* GetTypedPawn(TSubclassOf<APawn> PawnType) const;	
-	
+	APawn* GetTypedPawn(TSubclassOf<APawn> PawnType) const;
+
 	/** Interface */
 	virtual void OnEquipped();
 	virtual void OnUnequipped();
