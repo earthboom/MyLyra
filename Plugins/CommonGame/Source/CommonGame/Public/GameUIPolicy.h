@@ -14,6 +14,7 @@ struct FRootViewportLayoutInfo
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(Transient)
 	TObjectPtr<ULocalPlayer> LocalPlayer = nullptr;
 
@@ -25,16 +26,12 @@ struct FRootViewportLayoutInfo
 
 	bool operator==(const ULocalPlayer* OtherLocalPlayer) const { return LocalPlayer == OtherLocalPlayer; }
 
-	FRootViewportLayoutInfo()
-	{
-	}
-
-	FRootViewportLayoutInfo(ULocalPlayer* InLocalPlayer, UPrimaryGameLayout* InRootLayout, bool InbViewPort)
-		: LocalPlayer(InLocalPlayer),
-		  RootLayout(InRootLayout),
-		  bAddedToViewport(InbViewPort)
-	{
-	}
+	FRootViewportLayoutInfo() {}
+	FRootViewportLayoutInfo(ULocalPlayer* InLocalPlayer, UPrimaryGameLayout* InRootLayout, bool bIsInViewport)
+		: LocalPlayer(InLocalPlayer)
+		, RootLayout(InRootLayout)
+		, bAddedToViewport(bIsInViewport)
+	{}
 };
 
 /**

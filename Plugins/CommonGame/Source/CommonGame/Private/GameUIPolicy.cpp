@@ -18,12 +18,11 @@ TSubclassOf<UPrimaryGameLayout> UGameUIPolicy::GetLayoutWidgetClass(UCommonLocal
 void UGameUIPolicy::CreateLayoutWidget(UCommonLocalPlayer* LocalPlayer)
 {
 	// PlayerController가 할당되었을 경우, LayoutWidget을 생성
-	APlayerController* PC = LocalPlayer->GetPlayerController(GetWorld());
-	if (IsValid(PC))
+	if (APlayerController* PC = LocalPlayer->GetPlayerController(GetWorld()))
 	{
 		// LayoutWidgetClass가 있을 경우
 		TSubclassOf<UPrimaryGameLayout> LayoutWidgetClass = GetLayoutWidgetClass(LocalPlayer);
-		if (ensure(IsValid(LayoutWidgetClass) && LayoutWidgetClass->HasAnyClassFlags(CLASS_Abstract) == false))
+		if (ensure(LayoutWidgetClass && !LayoutWidgetClass->HasAnyClassFlags(CLASS_Abstract)))
 		{
 			// PlayerController가 소유한다는 의미에서 Owner 설정
 			UPrimaryGameLayout* NewLayoutObject = CreateWidget<UPrimaryGameLayout>(PC, LayoutWidgetClass);
@@ -64,9 +63,8 @@ void UGameUIPolicy::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 		NotifyPlayerRemoved(LocalPlayer);
 
 		// RootViewportLayouts를 순회하며 검색
-		// - FRootViewportLayoutInfo의 operator== 정의
-		FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer);
-		if (LayoutInfo)
+		// - FRootViewportLayoutInfo의 operator== 정의		;
+		if (FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer))
 		{
 			// Layout만 업데이트
 			AddLayoutToViewport(LocalPlayer, LayoutInfo->RootLayout);
@@ -79,8 +77,7 @@ void UGameUIPolicy::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 		}
 	});
 
-	FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer);
-	if (LayoutInfo)
+	if (FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer))
 	{
 		AddLayoutToViewport(LocalPlayer, LayoutInfo->RootLayout);
 		LayoutInfo->bAddedToViewport = true;
@@ -93,8 +90,7 @@ void UGameUIPolicy::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 
 void UGameUIPolicy::NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlayer)
 {
-	FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer);
-	if (LayoutInfo)
+	if (FRootViewportLayoutInfo* LayoutInfo = RootViewportLayouts.FindByKey(LocalPlayer))
 	{
 		RemoveLayoutFromViewport(LocalPlayer, LayoutInfo->RootLayout);
 

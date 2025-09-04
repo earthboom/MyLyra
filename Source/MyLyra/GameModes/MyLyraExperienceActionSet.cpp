@@ -4,7 +4,6 @@
 #include "GameFeatureAction.h"
 
 UMyLyraExperienceActionSet::UMyLyraExperienceActionSet()
-	: Super()
 {
 }
 
@@ -15,7 +14,7 @@ void UMyLyraExperienceActionSet::UpdateAssetBundleData()
 
 	for (UGameFeatureAction* Action : Actions)
 	{
-		if (IsValid(Action))
+		if (Action)
 		{
 			Action->AddAdditionalAssetBundleData(AssetBundleData);
 		}

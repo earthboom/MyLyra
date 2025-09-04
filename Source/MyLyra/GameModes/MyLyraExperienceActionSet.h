@@ -25,6 +25,6 @@ public:
 	/**
 	 *	member variables
 	 */
-	UPROPERTY(EditAnywhere, Category= "Actions to Perform")
+	UPROPERTY(EditAnywhere, Instanced, Category="Actions to Perform")
 	TArray<TObjectPtr<UGameFeatureAction>> Actions;
 };

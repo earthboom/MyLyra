@@ -22,10 +22,12 @@ public:
 
 	void SwitchToPolicy(UGameUIPolicy* InPolicy);
 
+	/** UGameInstanceSubsystem's interface */
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
+	/** UGameUIManagerSubsystem's interface */
 	virtual void NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer);
 	virtual void NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlayer);
 	virtual void NotifyPlayerDestroyed(UCommonLocalPlayer* LocalPlayer);

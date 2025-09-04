@@ -24,7 +24,7 @@ struct FMyLyraHUDLayoutRequest
 	TSoftClassPtr<UCommonActivatableWidget> LayoutClass;
 
 	/** 앞서 보았던 PrimaryGameLayout의 LayerID를 의미 */
-	UPROPERTY(EditAnywhere, Category = UI)
+	UPROPERTY(EditAnywhere, Category=UI, meta=(Categories="UI.Layer"))
 	FGameplayTag LayerID;
 };
 
@@ -45,7 +45,7 @@ struct FMyLyraHUDElementEntry
 /**
  * 
  */
-UCLASS()
+UCLASS(meta = (DisplayName = "Add Widgets"))
 class MYLYRA_API UGameFeatureAction_AddWidgets : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()

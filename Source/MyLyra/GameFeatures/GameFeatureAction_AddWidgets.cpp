@@ -10,15 +10,18 @@ void UGameFeatureAction_AddWidgets::AddWidgets(AActor* Actor, FPerContextData& A
 {
 	AMyLyraHUD* HUD = CastChecked<AMyLyraHUD>(Actor);
 
+	if (!HUD->GetOwningPlayerController())
+	{
+		return;
+	}
+
 	// HUD를 통해, LocalPlayer를 가져오자
-	ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(HUD->GetOwningPlayerController()->Player);
-	if (IsValid(LocalPlayer))
+	if (ULocalPlayer* LocalPlayer = Cast<ULocalPlayer>(HUD->GetOwningPlayerController()->Player))
 	{
 		// Layout의 요청 순회
 		for (const FMyLyraHUDLayoutRequest& Entry : Layout)
 		{
-			TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = Entry.LayoutClass.Get();
-			if (IsValid(ConcreteWidgetClass))
+			if (TSubclassOf<UCommonActivatableWidget> ConcreteWidgetClass = Entry.LayoutClass.Get())
 			{
 				ActiveData.LayoutsAdded.Add(UCommonUIExtensions::PushContentToLayer_ForPlayer(LocalPlayer, Entry.LayerID, ConcreteWidgetClass));
 			}
@@ -92,13 +95,11 @@ void UGameFeatureAction_AddWidgets::HandleActorExtension(AActor* Actor, FName Ev
 	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
 
 	// Receiver인 AMyLyraHUD의 Removed/Added에 따라 Widget을 추가/제거
-	if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved) ||
-		(EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved))
+	if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved) || (EventName == UGameFrameworkComponentManager::NAME_ReceiverRemoved))
 	{
 		RemoveWidgets(Actor, ActiveData);
 	}
-	else if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded) ||
-		(EventName == UGameFrameworkComponentManager::NAME_GameActorReady))
+	else if ((EventName == UGameFrameworkComponentManager::NAME_ExtensionAdded) || (EventName == UGameFrameworkComponentManager::NAME_GameActorReady))
 	{
 		AddWidgets(Actor, ActiveData);
 	}

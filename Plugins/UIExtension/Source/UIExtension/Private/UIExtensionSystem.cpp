@@ -16,8 +16,8 @@ bool FUIExtensionPoint::DoesExtensionPassContract(const FUIExtension* Extension)
 {
 	if (UObject* DataPtr = Extension->Data)
 	{
-		const bool bMatchContext = (ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull() ||
-			(ContextObject == Extension->ContextObject));
+		const bool bMatchContext = (ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull()) ||
+			(ContextObject == Extension->ContextObject);
 
 		if (bMatchContext)
 		{
@@ -41,7 +41,7 @@ void FUIExtensionPointHandle::Unregister()
 {
 	if (UUIExtensionSubsystem* ExtensionSourcePtr = ExtensionSource.Get())
 	{
-		ExtensionSource->UnregisterExtensionPoint(*this);
+		ExtensionSourcePtr->UnregisterExtensionPoint(*this);
 	}
 }
 
@@ -78,13 +78,13 @@ FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsWidgetForContext(co
 FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsData(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, UObject* Data, int32 Priority)
 {
 	// ExtensionPointTag(Slot)이 Invalid
-	if (ExtensionPointTag.IsValid() == false)
+	if (!ExtensionPointTag.IsValid())
 	{
 		return FUIExtensionHandle();
 	}
 
 	// WidgetClass 유무
-	if (IsValid(Data) == false)
+	if (!Data)
 	{
 		return FUIExtensionHandle();
 	}
@@ -125,12 +125,12 @@ void UUIExtensionSubsystem::UnregisterExtensionPoint(const FUIExtensionPointHand
 
 FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPointForContext(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, EUIExtensionPointMatch ExtensionPointTagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback)
 {
-	if (ExtensionPointTag.IsValid() == false)
+	if (!ExtensionPointTag.IsValid())
 	{
 		return FUIExtensionPointHandle();
 	}
 
-	if (ExtensionCallback.IsBound() == false)
+	if (!ExtensionCallback.IsBound())
 	{
 		return FUIExtensionPointHandle();
 	}
@@ -148,7 +148,7 @@ FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPointForContext(
 	Entry->ContextObject = ContextObject;
 	Entry->ExtensionPointTagMatchType = ExtensionPointTagMatchType;
 	Entry->AllowedDataClasses = AllowedDataClasses;
-	Entry->Callback = ExtensionCallback;
+	Entry->Callback = MoveTemp(ExtensionCallback);
 
 	// ExtensionPoint가 추가되었으니, NotifyExtensionPointOfExtensions 호출
 	NotifyExtensionPointOfExtensions(Entry);
@@ -156,9 +156,9 @@ FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPointForContext(
 	return FUIExtensionPointHandle(this, Entry);
 }
 
-FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPoint(const FGameplayTag& ExtensionPointTag, EUIExtensionPointMatch ExtensionPointMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback)
+FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPoint(const FGameplayTag& ExtensionPointTag, EUIExtensionPointMatch ExtensionPointTagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback)
 {
-	return RegisterExtensionPointForContext(ExtensionPointTag, nullptr, ExtensionPointMatchType, AllowedDataClasses, ExtensionCallback);
+	return RegisterExtensionPointForContext(ExtensionPointTag, nullptr, ExtensionPointTagMatchType, AllowedDataClasses, ExtensionCallback);
 }
 
 FUIExtensionRequest UUIExtensionSubsystem::CreateExtensionRequest(const TSharedPtr<FUIExtension>& Extension)
@@ -169,7 +169,6 @@ FUIExtensionRequest UUIExtensionSubsystem::CreateExtensionRequest(const TSharedP
 	Request.Priority = Extension->Priority;
 	Request.Data = Extension->Data;
 	Request.ContextObject = Extension->ContextObject.Get();
-
 	return Request;
 }
 
