@@ -34,13 +34,13 @@ public:
 	* 후일 ShooterCore 관련 Plugin 작업 진행할 경우, 진행될 예정
 	*/
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
-	TArray<FString> GameFeatureToEnable;
+	TArray<FString> GameFeaturesToEnable;
 
 	/** ExperienceActionSet은 UGameFeatureAction의 Set이며, Gameplay 용도에 맞게 분류의 목적으로 사용 */
 	UPROPERTY(EditDefaultsOnly, Category = Gameplay)
 	TArray<TObjectPtr<UMyLyraExperienceActionSet>> ActionSets;
 
 	/** 일반적인 GameFeatureAction으로서 추가 */
-	UPROPERTY(EditDefaultsOnly, Instanced, Category = Action)
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Actions")
 	TArray<TObjectPtr<UGameFeatureAction>> Actions;
 };

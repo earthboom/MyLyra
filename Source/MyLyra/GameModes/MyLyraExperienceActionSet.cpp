@@ -4,6 +4,7 @@
 #include "GameFeatureAction.h"
 
 UMyLyraExperienceActionSet::UMyLyraExperienceActionSet()
+	: Super()
 {
 }
 

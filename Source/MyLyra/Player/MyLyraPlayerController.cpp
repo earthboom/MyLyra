@@ -4,6 +4,7 @@
 #include "MyLyraPlayerState.h"
 #include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/Camera/MyLyraPlayerCameraManager.h"
+#include UE_INLINE_GENERATED_CPP_BY_NAME(MyLyraPlayerController)
 
 AMyLyraPlayerController::AMyLyraPlayerController(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -16,8 +17,7 @@ void AMyLyraPlayerController::PostProcessInput(const float DeltaTime, const bool
 	// PostProcessInput이 언제 호출되는지 확인
 	// - UPlayerInput::ProcessInputStack() 에서 호출 됨
 
-	UMyLyraAbilitySystemComponent* MyLyraASC = GetMyLyraAbilitySystemComponent();
-	if (IsValid(MyLyraASC))
+	if (UMyLyraAbilitySystemComponent* MyLyraASC = GetMyLyraAbilitySystemComponent())
 	{
 		MyLyraASC->ProcessAbilityInput(DeltaTime, bGamePaused);
 	}

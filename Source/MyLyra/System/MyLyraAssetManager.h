@@ -62,13 +62,13 @@ AssetType* UMyLyraAssetManager::GetAsset(const TSoftObjectPtr<AssetType>& AssetP
 			LoadedAsset = Cast<AssetType>(SynchronousLoadAsset(AssetPath));
 			ensureAlwaysMsgf(LoadedAsset, TEXT("Failed to load asset [%s]"), *AssetPointer.ToString());
 		}
-	}
 
-	if (LoadedAsset && bKeepInMemory)
-	{
-		// AddLoadedAsset 은 메모리에 상주하기 위한 장치라고 생각하면 됨
-		// 한 번 등록되면 직접 내리지 않는 이상 Unload가 되지 않음 ( == caching ) 
-		Get().AddLoadedAsset(Cast<UObject>(LoadedAsset));
+		if (LoadedAsset && bKeepInMemory)
+		{
+			// AddLoadedAsset 은 메모리에 상주하기 위한 장치라고 생각하면 됨
+			// 한 번 등록되면 직접 내리지 않는 이상 Unload가 되지 않음 ( == caching ) 
+			Get().AddLoadedAsset(Cast<UObject>(LoadedAsset));
+		}
 	}
 
 	return LoadedAsset;
@@ -88,11 +88,11 @@ TSubclassOf<AssetType> UMyLyraAssetManager::GetSubClass(const TSoftClassPtr<Asse
 			LoadedSubClass = Cast<UClass>(SynchronousLoadAsset(AssetPath));
 			ensureAlwaysMsgf(LoadedSubClass, TEXT("Failed to load asset class [%s]"), *AssetPointer.ToString());
 		}
-	}
 
-	if (LoadedSubClass && bKeepInMemory)
-	{
-		Get().AddLoadedAsset(Cast<UObject>(LoadedSubClass));
+		if (LoadedSubClass && bKeepInMemory)
+		{
+			Get().AddLoadedAsset(Cast<UObject>(LoadedSubClass));
+		}
 	}
 
 	return LoadedSubClass;

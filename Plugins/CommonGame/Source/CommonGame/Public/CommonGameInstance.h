@@ -17,7 +17,7 @@ class COMMONGAME_API UCommonGameInstance : public UGameInstance
 public:
 	UCommonGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	
-	virtual int32 AddLocalPlayer(ULocalPlayer* NewPlayer, int32 ControllerId) override;
+	virtual int32 AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId) override;
 	virtual bool RemoveLocalPlayer(ULocalPlayer* ExistingPlayer) override;
 
 	/** 메인 Local Player를 캐싱 */

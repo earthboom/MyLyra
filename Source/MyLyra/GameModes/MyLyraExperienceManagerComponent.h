@@ -34,6 +34,8 @@ class MYLYRA_API UMyLyraExperienceManagerComponent : public UGameStateComponent
 	GENERATED_BODY()
 
 public:
+	UMyLyraExperienceManagerComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	bool IsExperienceLoaded() { return (LoadState == EMyLyraExperienceLoadState::Loaded) && (CurrentExperience != nullptr); }
 
 	// 아래의 OnExperienceLvlel 에 바인딩하거나, 이미 Experience 로딩이 완료되었다면 바로 호출
@@ -57,6 +59,6 @@ public:
 	FOnMyLyraExperienceLoaded OnExperienceLoaded;
 
 	/** 활성화된 GameFeature Plugin 들 */
-	int32 NumGameFeaturePluginLoading = 0;
+	int32 NumGameFeaturePluginsLoading = 0;
 	TArray<FString> GameFeaturePluginURLs;
 };

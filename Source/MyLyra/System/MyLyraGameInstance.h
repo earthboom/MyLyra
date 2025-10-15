@@ -15,6 +15,9 @@ class MYLYRA_API UMyLyraGameInstance : public UCommonGameInstance
 {
 	GENERATED_BODY()
 
+public:
+	UMyLyraGameInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 	// UGameInstance's interface
 	virtual void Init() override;
 	virtual void Shutdown() override;

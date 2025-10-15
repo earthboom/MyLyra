@@ -37,17 +37,16 @@ void UGameFeatureAction_AddInputConfig::AddToWorld(const FWorldContext& WorldCon
 	UGameInstance* GameInstance = WorldContext.OwningGameInstance;
 	FPerContextData& ActiveData = ContextData.FindOrAdd(ChangeContext);
 
-	if (IsValid(GameInstance) && IsValid(World) && World->IsGameWorld())
+	if (GameInstance && World && World->IsGameWorld())
 	{
 		// GameFrameworkComponentManager을 이용해, ExtensionHandler를 추가해 등록 진행
 		// - HandlePawnExtension 콜백함수로 연결
-		UGameFrameworkComponentManager* ComponentManager = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance);
-		if (IsValid(ComponentManager))
+		if (UGameFrameworkComponentManager* ComponentMan = UGameInstance::GetSubsystem<UGameFrameworkComponentManager>(GameInstance))
 		{
-			UGameFrameworkComponentManager::FExtensionHandlerDelegate AddConfigDelegate = UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(this, &UGameFeatureAction_AddInputConfig::HandlePawnExtension, ChangeContext);
+			UGameFrameworkComponentManager::FExtensionHandlerDelegate AddConfigDelegate = UGameFrameworkComponentManager::FExtensionHandlerDelegate::CreateUObject(this, &ThisClass::HandlePawnExtension, ChangeContext);
 
 			// 등록된 콜백 함수의 핸들을 ActiveDta의 ExtensionRequestHandles 에 등록
-			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentManager->AddExtensionHandler(APawn::StaticClass(), AddConfigDelegate);
+			TSharedPtr<FComponentRequestHandle> ExtensionRequestHandle = ComponentMan->AddExtensionHandler(APawn::StaticClass(), AddConfigDelegate);
 			ActiveData.ExtensionRequestHandles.Add(ExtensionRequestHandle);
 		}
 	}
@@ -62,7 +61,7 @@ void UGameFeatureAction_AddInputConfig::HandlePawnExtension(AActor* Actor, FName
 	{
 		AddInputConfig(AsPawn, ActiveData);
 	}
-	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved)
+	else if (EventName == UGameFrameworkComponentManager::NAME_ExtensionRemoved || EventName == UMyLyraHeroComponent::NAME_BindInputsNow)
 	{
 		RemoveInputConfig(AsPawn, ActiveData);
 	}
@@ -71,24 +70,19 @@ void UGameFeatureAction_AddInputConfig::HandlePawnExtension(AActor* Actor, FName
 void UGameFeatureAction_AddInputConfig::AddInputConfig(APawn* Pawn, FPerContextData& ActiveData)
 {
 	APlayerController* PC = Cast<APlayerController>(Pawn->GetController());
-	ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr;
-	if (IsValid(LP))
+	if (ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr)
 	{
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-		if (IsValid(Subsystem))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			// 추가된 InputConfigs를 순회하며, EnhancedInputSubsystem에 PlayerMappableConfig를 직접 추가
 			for (const FMyLyraMappableConfigPair& Pair : InputConfigs)
 			{
-				FModifyContextOptions Options = {};
-				Options.bIgnoreAllPressedKeysUntilRelease = false;
-
 				const UPlayerMappableInputConfig* Config = Pair.Config.LoadSynchronous();
 				for (const TPair<TObjectPtr<UInputMappingContext>, int>& MappingContextPair : Config->GetMappingContexts())
 				{
 					const UInputMappingContext* MappingContext = MappingContextPair.Key;
 					const int32 Priority = MappingContextPair.Value;
-					Subsystem->AddMappingContext(MappingContext, Priority, Options);
+					Subsystem->AddMappingContext(MappingContext, Priority);
 				}
 			}
 
@@ -104,21 +98,17 @@ void UGameFeatureAction_AddInputConfig::RemoveInputConfig(APawn* Pawn, FPerConte
 	ULocalPlayer* LP = PC ? PC->GetLocalPlayer() : nullptr;
 	if (IsValid(LP))
 	{
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-		if (IsValid(Subsystem))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 		{
 			for (const FMyLyraMappableConfigPair& Pair : InputConfigs)
 			{
 				if (Pair.bShouldActivateAutomatically)
 				{
-					FModifyContextOptions Options = {};
-					Options.bIgnoreAllPressedKeysUntilRelease = false;
-
 					const UPlayerMappableInputConfig* Config = Pair.Config.LoadSynchronous();
 					for (const TPair<TObjectPtr<UInputMappingContext>, int>& MappingContextPair : Config->GetMappingContexts())
 					{
 						const UInputMappingContext* MappingContext = MappingContextPair.Key;
-						Subsystem->RemoveMappingContext(MappingContext, Options);
+						Subsystem->RemoveMappingContext(MappingContext);
 					}
 				}
 			}

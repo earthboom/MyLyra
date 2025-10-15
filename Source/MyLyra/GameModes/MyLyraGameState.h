@@ -16,7 +16,7 @@ class MYLYRA_API AMyLyraGameState : public AGameStateBase
 	GENERATED_BODY()
 
 public:
-	AMyLyraGameState();
+	AMyLyraGameState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 public:
 	UPROPERTY()

@@ -17,19 +17,19 @@ class MYLYRA_API AMyLyraGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	AMyLyraGameModeBase();
+	AMyLyraGameModeBase(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) final;
 	virtual void InitGameState() final;
 
-	// GetDefaultPawnClassForController
-	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+	/** GetDefaultPawnClassForController */
+	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) final;
 
-	// HandleStartingNewPlayer
-	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+	/** HandleStartingNewPlayer */
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) final;
 
-	// SpawnDefaultPawnAtTransform
-	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) override;
+	/** SpawnDefaultPawnAtTransform */
+	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) final;
 
 	void HandleMatchAssignmentIfNotExpectingOne();
 	void OnMatchAssignmentGiven(FPrimaryAssetId ExperienceId);

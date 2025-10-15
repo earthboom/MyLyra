@@ -6,5 +6,5 @@
 UGameFeatureAction_AddGameplayCuePath::UGameFeatureAction_AddGameplayCuePath()
 	: Super()
 {
-	DirectoryPathsToAdd.Add(FDirectoryPath{TEXT("/GameplayCues")});
+	DirectoryPathsToAdd.Add(FDirectoryPath{ TEXT("/GameplayCues") });
 }

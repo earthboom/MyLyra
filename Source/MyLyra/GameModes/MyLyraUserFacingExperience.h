@@ -23,10 +23,10 @@ public:
 	/** the specific map to load
 	 *	유저가 경험할 맵을 들고 있음
 	 */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience, meta=(AllowedTypes="Map"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Experience, meta = (AllowedTypes = "Map"))
 	FPrimaryAssetId MapID;
 
 	/** the gameplay experience to load */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category=Experience, meta=(AllowedTypes="MyLyraExperienceDefinition"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = Experience, meta = (AllowedTypes = "MyLyraExperienceDefinition"))
 	FPrimaryAssetId ExperienceID;
 };

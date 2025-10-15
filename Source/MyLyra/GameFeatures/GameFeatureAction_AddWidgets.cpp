@@ -10,7 +10,7 @@ void UGameFeatureAction_AddWidgets::AddWidgets(AActor* Actor, FPerContextData& A
 {
 	AMyLyraHUD* HUD = CastChecked<AMyLyraHUD>(Actor);
 
-	if (!HUD->GetOwningPlayerController())
+	if (HUD->GetOwningPlayerController() == nullptr)
 	{
 		return;
 	}

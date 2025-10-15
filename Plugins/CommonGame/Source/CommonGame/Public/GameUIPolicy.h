@@ -6,14 +6,13 @@
 #include "UObject/NoExportTypes.h"
 #include "GameUIPolicy.generated.h"
 
-class UCommonLocalPlayer;
 class UPrimaryGameLayout;
+class UCommonLocalPlayer;
 
 USTRUCT()
 struct FRootViewportLayoutInfo
 {
 	GENERATED_BODY()
-
 public:
 	UPROPERTY(Transient)
 	TObjectPtr<ULocalPlayer> LocalPlayer = nullptr;

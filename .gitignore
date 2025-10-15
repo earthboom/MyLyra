@@ -44,3 +44,6 @@ desktop.ini
 *.xcodeproj
 *.xcworkspace
 *.xcuserstate
+
+# ETC
+GEMINI.md

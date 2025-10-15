@@ -82,18 +82,22 @@ void UUIExtensionPointWidget::RegisterExtensionPoint()
 {
 	if (UUIExtensionSubsystem* ExtensionSubsystem = GetWorld()->GetSubsystem<UUIExtensionSubsystem>())
 	{
-		// UUserWidget을 포함, AllowDataClasses를 생성
+		// UUserWidget을 포함하여, AllowedDataClasses를 생성
 		TArray<UClass*> AllowedDataClasses;
 		AllowedDataClasses.Add(UUserWidget::StaticClass());
 		AllowedDataClasses.Append(DataClasses);
 
 		// nullptr용 (ContextObject) ExtensionPoint 생성
-		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPoint(ExtensionPointTag, ExtensionPointTagMatch, AllowedDataClasses,
-			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)));
+		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPoint(
+			ExtensionPointTag, ExtensionPointTagMatch, AllowedDataClasses,
+			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)
+		));
 
-		// LocalPlayer 용 (ContextObject) ExtensionPoint 생성
-		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPointForContext(ExtensionPointTag, GetOwningLocalPlayer(), ExtensionPointTagMatch, AllowedDataClasses,
-			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)));
+		// LocalPlayer용 (ContextObject) ExtensionPoint 생성
+		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPointForContext(
+			ExtensionPointTag, GetOwningLocalPlayer(), ExtensionPointTagMatch, AllowedDataClasses,
+			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)
+		));
 	}
 }
 
@@ -106,8 +110,10 @@ void UUIExtensionPointWidget::RegisterExtensionPointForPlayerState(UCommonLocalP
 		AllowedDataClasses.Add(UUserWidget::StaticClass());
 		AllowedDataClasses.Append(DataClasses);
 
-		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPointForContext(ExtensionPointTag, PlayerState, ExtensionPointTagMatch, AllowedDataClasses,
-			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)));
+		ExtensionPointHandles.Add(ExtensionSubsystem->RegisterExtensionPointForContext(
+			ExtensionPointTag, PlayerState, ExtensionPointTagMatch, AllowedDataClasses,
+			FExtendExtensionPointDelegate::CreateUObject(this, &ThisClass::OnAddOrRemoveExtension)
+		));
 	}
 }
 

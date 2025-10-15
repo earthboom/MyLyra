@@ -16,7 +16,8 @@ bool FUIExtensionPoint::DoesExtensionPassContract(const FUIExtension* Extension)
 {
 	if (UObject* DataPtr = Extension->Data)
 	{
-		const bool bMatchContext = (ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull()) ||
+		const bool bMatchContext =
+			(ContextObject.IsExplicitlyNull() && Extension->ContextObject.IsExplicitlyNull()) ||
 			(ContextObject == Extension->ContextObject);
 
 		if (bMatchContext)
@@ -78,13 +79,13 @@ FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsWidgetForContext(co
 FUIExtensionHandle UUIExtensionSubsystem::RegisterExtensionAsData(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, UObject* Data, int32 Priority)
 {
 	// ExtensionPointTag(Slot)이 Invalid
-	if (!ExtensionPointTag.IsValid())
+	if (ExtensionPointTag.IsValid() == false)
 	{
 		return FUIExtensionHandle();
 	}
 
 	// WidgetClass 유무
-	if (!Data)
+	if (Data == nullptr)
 	{
 		return FUIExtensionHandle();
 	}
@@ -125,12 +126,12 @@ void UUIExtensionSubsystem::UnregisterExtensionPoint(const FUIExtensionPointHand
 
 FUIExtensionPointHandle UUIExtensionSubsystem::RegisterExtensionPointForContext(const FGameplayTag& ExtensionPointTag, UObject* ContextObject, EUIExtensionPointMatch ExtensionPointTagMatchType, const TArray<UClass*>& AllowedDataClasses, FExtendExtensionPointDelegate ExtensionCallback)
 {
-	if (!ExtensionPointTag.IsValid())
+	if (ExtensionPointTag.IsValid() == false)
 	{
 		return FUIExtensionPointHandle();
 	}
 
-	if (!ExtensionCallback.IsBound())
+	if (ExtensionCallback.IsBound() == false)
 	{
 		return FUIExtensionPointHandle();
 	}

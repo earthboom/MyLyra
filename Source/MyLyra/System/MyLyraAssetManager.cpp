@@ -16,8 +16,7 @@ UMyLyraAssetManager& UMyLyraAssetManager::Get()
 
 	// singleton pattern : 유일성을 보장하는 패턴, 즉 한 개 이상일 수 없음
 	// 엔진에 캐싱된 AssetManager 를 변환하여 반환
-	UMyLyraAssetManager* Singleton = Cast<UMyLyraAssetManager>(GEngine->AssetManager);
-	if (Singleton)
+	if (UMyLyraAssetManager* Singleton = Cast<UMyLyraAssetManager>(GEngine->AssetManager))
 	{
 		return *Singleton;
 	}
@@ -45,8 +44,7 @@ PRAGMA_ENABLE_OPTIMIZATION
 bool UMyLyraAssetManager::ShouldLogAssetLoads()
 {
 	// cmd 의 command 적용과 같음 ( ex : UnrealEngeine.exe SkilCompile LogASsetLoads
-	const TCHAR* CommandLineContent = FCommandLine::Get();
-	static bool bLogAssetLoads = FParse::Param(CommandLineContent, TEXT("LogAssetLoads"));
+	static bool bLogAssetLoads = FParse::Param(FCommandLine::Get(), TEXT("LogAssetLoads"));
 	return bLogAssetLoads;
 }
 

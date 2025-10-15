@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.5",
+	"EngineAssociation": "{DE662A22-47CA-E5CA-36FE-DAA0D13501F0}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -15,7 +15,8 @@
 				"EnhancedInput",
 				"GameplayAbilities",
 				"CommonGame",
-				"CommonUI"
+				"CommonUI",
+				"UMG"
 			]
 		}
 	],
@@ -59,9 +60,9 @@
 			"Name": "CommonGame",
 			"Enabled": true
 		},
-        {
-            "Name": "UIExtension",
-            "Enabled": true
-        }
+		{
+			"Name": "UIExtension",
+			"Enabled": true
+		}
 	]
 }

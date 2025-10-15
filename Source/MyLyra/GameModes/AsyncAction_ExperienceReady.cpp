@@ -12,8 +12,7 @@ UAsyncAction_ExperienceReady::UAsyncAction_ExperienceReady(const FObjectInitiali
 UAsyncAction_ExperienceReady* UAsyncAction_ExperienceReady::WaitForExperienceReady(UObject* WorldContextObject)
 {
 	UAsyncAction_ExperienceReady* Action = nullptr;
-	UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
-	if (IsValid(World))
+	if (UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
 	{
 		Action = NewObject<UAsyncAction_ExperienceReady>();
 		Action->WorldPtr = World;
@@ -24,14 +23,10 @@ UAsyncAction_ExperienceReady* UAsyncAction_ExperienceReady::WaitForExperienceRea
 
 void UAsyncAction_ExperienceReady::Activate()
 {
-	Super::Activate();
-
-	UWorld* World = WorldPtr.Get();
-	if (IsValid(World))
+	if (UWorld* World = WorldPtr.Get())
 	{
 		// GameState가 이미 World에 준비되어 있으면, Step1을 스킵하고 바로 Step2를 진행
-		AGameStateBase* GameState = World->GetGameState();
-		if (IsValid(GameState))
+		if (AGameStateBase* GameState = World->GetGameState())
 		{
 			Step2_ListenToExperienceLoading(GameState);
 		}
@@ -53,8 +48,7 @@ void UAsyncAction_ExperienceReady::Activate()
 
 void UAsyncAction_ExperienceReady::Step1_HandleGameStateSet(AGameStateBase* GameState)
 {
-	UWorld* World = WorldPtr.Get();
-	if (IsValid(World))
+	if (UWorld* World = WorldPtr.Get())
 	{
 		World->GameStateSetEvent.RemoveAll(this);
 	}
@@ -71,6 +65,7 @@ void UAsyncAction_ExperienceReady::Step2_ListenToExperienceLoading(AGameStateBas
 	UMyLyraExperienceManagerComponent* ExperienceManagerComponent = GameState->FindComponentByClass<UMyLyraExperienceManagerComponent>();
 	check(ExperienceManagerComponent);
 
+	// 이미 Experience가 준비되었다면, Step3를 스킵하고 Step4로 넘어감
 	if (ExperienceManagerComponent->IsExperienceLoaded())
 	{
 		UWorld* World = GameState->GetWorld();

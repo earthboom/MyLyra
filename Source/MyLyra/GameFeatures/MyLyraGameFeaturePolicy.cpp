@@ -51,14 +51,12 @@ void UMyLyraGameFeature_AddGameplayCuePaths::OnGameFeatureRegistering(const UGam
 	for (const UGameFeatureAction* Action : GameFeatureData->GetActions())
 	{
 		// 그 중에 _AddGameplayCuePath를 찾아 처리
-		const UGameFeatureAction_AddGameplayCuePath* AddGameplayCueGFA = Cast<UGameFeatureAction_AddGameplayCuePath>(Action);
-		if (IsValid(AddGameplayCueGFA))
+		if (const UGameFeatureAction_AddGameplayCuePath* AddGameplayCueGFA = Cast<UGameFeatureAction_AddGameplayCuePath>(Action))
 		{
 			const TArray<FDirectoryPath>& DirsToAdd = AddGameplayCueGFA->DirectoryPathsToAdd;
 
 			// GameplayCueManager를 가져와서, GFA에 등록된 DirsToAdd를 추가하면서 GCM의 데이터가 업데이트 되도록 진행
-			UMyLyraGameplayCueManager* GCM = UMyLyraGameplayCueManager::Get();
-			if (IsValid(GCM))
+			if (UMyLyraGameplayCueManager* GCM = UMyLyraGameplayCueManager::Get())
 			{
 				// RuntimeCueSet을 가져옴
 				UGameplayCueSet* RuntimeGameplayCueSet = GCM->GetRuntimeCueSet();
@@ -98,12 +96,10 @@ void UMyLyraGameFeature_AddGameplayCuePaths::OnGameFeatureUnregistering(const UG
 	const FString PluginRootPath = TEXT("/") + PluginName;
 	for (const UGameFeatureAction* Action : GameFeatureData->GetActions())
 	{
-		const UGameFeatureAction_AddGameplayCuePath* AddGameplayCueGFA = Cast<UGameFeatureAction_AddGameplayCuePath>(GameFeatureData);
-		if (IsValid(AddGameplayCueGFA))
+		if (const UGameFeatureAction_AddGameplayCuePath* AddGameplayCueGFA = Cast<UGameFeatureAction_AddGameplayCuePath>(GameFeatureData))
 		{
 			const TArray<FDirectoryPath>& DirsToAdd = AddGameplayCueGFA->DirectoryPathsToAdd;
-			UMyLyraGameplayCueManager* GCM = UMyLyraGameplayCueManager::Get();
-			if (IsValid(GCM))
+			if (UMyLyraGameplayCueManager* GCM = UMyLyraGameplayCueManager::Get())
 			{
 				int32 NumRemoved = 0;
 				for (const FDirectoryPath& Directory : DirsToAdd)

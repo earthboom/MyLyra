@@ -10,9 +10,6 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "GameFeatureAction_AddWidgets.generated.h"
 
-struct FWorldContext;
-class UCommonActivatableWidget;
-
 /** HUD의 Layout 요청 */
 USTRUCT()
 struct FMyLyraHUDLayoutRequest
@@ -46,7 +43,7 @@ struct FMyLyraHUDElementEntry
  * 
  */
 UCLASS(meta = (DisplayName = "Add Widgets"))
-class MYLYRA_API UGameFeatureAction_AddWidgets : public UGameFeatureAction_WorldActionBase
+class MYLYRA_API UGameFeatureAction_AddWidgets final : public UGameFeatureAction_WorldActionBase
 {
 	GENERATED_BODY()
 

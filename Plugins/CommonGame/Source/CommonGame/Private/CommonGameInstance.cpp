@@ -10,10 +10,10 @@ UCommonGameInstance::UCommonGameInstance(const FObjectInitializer& ObjectInitial
 {
 }
 
-int32 UCommonGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, int32 ControllerId)
+int32 UCommonGameInstance::AddLocalPlayer(ULocalPlayer* NewPlayer, FPlatformUserId UserId)
 {
 	// GameInstance에 관리하는 Player 컨테이너에 추가
-	int32 ReturnVal = Super::AddLocalPlayer(NewPlayer, ControllerId);
+	int32 ReturnVal = Super::AddLocalPlayer(NewPlayer, UserId);
 	if (ReturnVal != INDEX_NONE)
 	{
 		// PrimaryPlayer는 처음만 캐싱 (Index 0 을 메인으로 잡는듯?)

@@ -3,3 +3,7 @@
 
 #include "MyLyraLocalPlayer.h"
 
+UMyLyraLocalPlayer::UMyLyraLocalPlayer()
+	: Super()
+{
+}

@@ -13,5 +13,6 @@ UCLASS()
 class MYLYRA_API UMyLyraLocalPlayer : public UCommonLocalPlayer
 {
 	GENERATED_BODY()
-	
+public:
+	UMyLyraLocalPlayer();
 };

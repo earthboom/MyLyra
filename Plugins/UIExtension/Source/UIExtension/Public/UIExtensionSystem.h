@@ -89,7 +89,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayTag ExtensionPointTag;
 
-	/** WidgetClass로 FUIExtension과 같음 */
+	/** WidgetClass로 FUIExtension과 같다 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UObject> Data = nullptr;
 
@@ -106,13 +106,13 @@ DECLARE_DELEGATE_TwoParams(FExtendExtensionPointDelegate, EUIExtensionAction Act
 struct FUIExtensionPoint : TSharedFromThis<FUIExtensionPoint>
 {
 public:
-	/** Extension - ExtensionPoint와 매칭되는지 확인 */
+	/** Extension---ExtensionPoint와 매칭되는지 확인 */
 	bool DoesExtensionPassContract(const FUIExtension* Extension) const;
 
 	/** UIExtension의 Slot GameplayTag */
 	FGameplayTag ExtensionPointTag;
 
-	/** UIExtension을 생성 / 제거한 Instigator(주체) */
+	/** UIExtension을 생성/제거한 Instigator(주체) */
 	TWeakObjectPtr<UObject> ContextObject;
 
 	/** UIExtensionPointWidget에 허용된 Widget Class -> UIExtensionPointWidget's DataClasses */
@@ -158,16 +158,16 @@ public:
 
 	FUIExtensionRequest CreateExtensionRequest(const TSharedPtr<FUIExtension>& Extension);
 
-	/** ExtensionPoint --(Broadcast)--> Extensions [ExtensionPointrk 추가/제거 되었을 경우, Extension에 알림 : 참고로 Added만 함] */
+	/** ExtensionPoint --(Broadcast)--> Extensions [ExtensionPointrk 추가/제거 되었을 경우, Extension에 알림: 참고로 Added만 함] */
 	void NotifyExtensionPointOfExtensions(TSharedPtr<FUIExtensionPoint>& ExtensionPoint);
-	/** Extension --(Broadcast)--> ExtensionPoints [Extension이 추가/제거 되었을 경우, Extension Point에 알림] */
+	/** Extension --(Broadcast) --> ExtensionPoints [Extension이 추가/제거 되었을 경우, Extension Points에 알림] */
 	void NotifyExtensionPointsOfExtension(EUIExtensionAction Action, TSharedPtr<FUIExtension>& Extension);
 
-	/** GameplayTag(Slot) - FUIExtension(WidgetClass) */
+	/** GameplayTag(Slot) --- FUIExtension(WidgetClass) */
 	typedef TArray<TSharedPtr<FUIExtension>> FExtensionList;
 	TMap<FGameplayTag, FExtensionList> ExtensionMap;
 
-	/** GameplayTag(Slot) - FUIExtensionPoint(WidgetClassWithContext) */
+	/** GameplayTag(Slot) --- FUIExtensionPoint(WidgetClassWithContext) */
 	typedef TArray<TSharedPtr<FUIExtensionPoint>> FExtensionPointList;
 	TMap<FGameplayTag, FExtensionPointList> ExtensionPointMap;
 };

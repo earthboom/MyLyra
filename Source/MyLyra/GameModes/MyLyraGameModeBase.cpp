@@ -5,7 +5,6 @@
 #include "MyLyraGameState.h"
 #include "MyLyraExperienceDefinition.h"
 #include "Kismet/GameplayStatics.h"
-#include "MyLyra/MyLyraLogChannels.h"
 #include "MyLyra/Character/MyLyraCharacter.h"
 #include "MyLyra/Character/MyLyraPawnData.h"
 #include "MyLyra/Character/MyLyraPawnExtensionComponent.h"
@@ -13,7 +12,8 @@
 #include "MyLyra/Player/MyLyraPlayerState.h"
 #include "MyLyra/UI/MyLyraHUD.h"
 
-AMyLyraGameModeBase::AMyLyraGameModeBase()
+AMyLyraGameModeBase::AMyLyraGameModeBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	GameStateClass = AMyLyraGameState::StaticClass();
 	PlayerControllerClass = AMyLyraPlayerController::StaticClass();
@@ -77,11 +77,11 @@ APawn* AMyLyraGameModeBase::SpawnDefaultPawnAtTransform_Implementation(AControll
 		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
 		{
 			// FindPawnExtensionComponent 구성
-			if (UMyLyraPawnExtensionComponent* PawnExtensionComponent = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
+			if (UMyLyraPawnExtensionComponent* PawnExtComp = UMyLyraPawnExtensionComponent::FindPawnExtensionComponent(SpawnedPawn))
 			{
 				if (const UMyLyraPawnData* PawnData = GetPawnDataForController(NewPlayer))
 				{
-					PawnExtensionComponent->SetPawnData(PawnData);
+					PawnExtComp->SetPawnData(PawnData);
 				}
 			}
 			SpawnedPawn->FinishSpawning(SpawnTransform);
@@ -147,7 +147,7 @@ void AMyLyraGameModeBase::OnExperienceLoaded(const UMyLyraExperienceDefinition* 
 		APlayerController* PC = Cast<APlayerController>(*Iterator);
 
 		// PlayerController가 Pawn을 Possess하지 않았다면, RestartPlayer를 통해 Pawn을 다시 Spawn
-		if (IsValid(PC) && PC->GetPawn() == nullptr)
+		if (PC && PC->GetPawn() == nullptr)
 		{
 			if (PlayerCanRestart(PC))
 			{
@@ -160,7 +160,7 @@ void AMyLyraGameModeBase::OnExperienceLoaded(const UMyLyraExperienceDefinition* 
 const UMyLyraPawnData* AMyLyraGameModeBase::GetPawnDataForController(const AController* InController) const
 {
 	// 게임 도중 PawnData가 오버라이드 되었을 경우, PawnData는 PlayerState에서 가져오게 됨
-	if (IsValid(InController))
+	if (InController)
 	{
 		if (const AMyLyraPlayerState* MyLyraPS = InController->GetPlayerState<AMyLyraPlayerState>())
 		{

@@ -10,7 +10,7 @@ class UGameFeatureAction;
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class MYLYRA_API UMyLyraExperienceActionSet : public UPrimaryDataAsset
 {
 	GENERATED_BODY()

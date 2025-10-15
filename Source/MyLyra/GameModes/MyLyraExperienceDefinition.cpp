@@ -16,8 +16,8 @@ void UMyLyraExperienceDefinition::UpdateAssetBundleData()
 
 	for (UGameFeatureAction* Action : Actions)
 	{
-		if (IsValid(Action))
-		{			
+		if (Action)
+		{		
 			// AddAdditionalAssetBundleData()는 UGameFeatureAction의 메서드
 			// - 임의적 호출을 통해 AssetBundleData에 추가
 			Action->AddAdditionalAssetBundleData(AssetBundleData);

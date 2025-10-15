@@ -4,6 +4,11 @@
 #include "Components/GameFrameworkComponentManager.h"
 #include "MyLyra/MyLyraGameplayTags.h"
 
+UMyLyraGameInstance::UMyLyraGameInstance(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}
+
 void UMyLyraGameInstance::Init()
 {
 	Super::Init();

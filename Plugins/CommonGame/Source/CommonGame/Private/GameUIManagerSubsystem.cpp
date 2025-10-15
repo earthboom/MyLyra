@@ -56,7 +56,7 @@ bool UGameUIManagerSubsystem::ShouldCreateSubsystem(UObject* Outer) const
 
 void UGameUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 {
-	if (ensure(LocalPlayer) && IsValid(CurrentPolicy))
+	if (ensure(LocalPlayer) && CurrentPolicy)
 	{
 		CurrentPolicy->NotifyPlayerAdded(LocalPlayer);
 	}
@@ -64,7 +64,7 @@ void UGameUIManagerSubsystem::NotifyPlayerAdded(UCommonLocalPlayer* LocalPlayer)
 
 void UGameUIManagerSubsystem::NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlayer)
 {
-	if (LocalPlayer && IsValid(CurrentPolicy))
+	if (LocalPlayer && CurrentPolicy)
 	{
 		CurrentPolicy->NotifyPlayerRemoved(LocalPlayer);
 	}
@@ -72,7 +72,7 @@ void UGameUIManagerSubsystem::NotifyPlayerRemoved(UCommonLocalPlayer* LocalPlaye
 
 void UGameUIManagerSubsystem::NotifyPlayerDestroyed(UCommonLocalPlayer* LocalPlayer)
 {
-	if (LocalPlayer && IsValid(CurrentPolicy))
+	if (LocalPlayer && CurrentPolicy)
 	{
 		CurrentPolicy->NotifyPlayerDestroyed(LocalPlayer);
 	}

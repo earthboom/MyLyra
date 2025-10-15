@@ -18,7 +18,7 @@ void AMyLyraPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	check(IsValid(AbilitySystemComponent));
+	check(AbilitySystemComponent);
 	// 아래의 코드는 우리가 InitAbilityActorInfo를 재호출을 통하는 이유를 설명하는 코드
 	{
 		// 처음 InitAbilityActorInfo를 호출 당시, OwnerActor와 AvatarActor가 같은 Actor를 가르키고 있으며, 이는 PlayerState
@@ -36,7 +36,7 @@ void AMyLyraPlayerState::PostInitializeComponents()
 	UMyLyraExperienceManagerComponent* ExperienceManagerComponent = GameState->FindComponentByClass<UMyLyraExperienceManagerComponent>();
 	check(ExperienceManagerComponent);
 
-	ExperienceManagerComponent->CallOrRegister_OnExperienceLoaded(FOnMyLyraExperienceLoaded::FDelegate::CreateUObject(this, &AMyLyraPlayerState::OnExperienceLoaded));
+	ExperienceManagerComponent->CallOrRegister_OnExperienceLoaded(FOnMyLyraExperienceLoaded::FDelegate::CreateUObject(this, &ThisClass::OnExperienceLoaded));
 }
 
 void AMyLyraPlayerState::OnExperienceLoaded(const UMyLyraExperienceDefinition* CurrentExperience)
@@ -53,7 +53,8 @@ void AMyLyraPlayerState::OnExperienceLoaded(const UMyLyraExperienceDefinition* C
 void AMyLyraPlayerState::SetPawnData(const UMyLyraPawnData* InPawnData)
 {
 	check(InPawnData);
-	check(IsValid(PawnData) == false); // PawnData가 두번 설정되는 것을 원치 않음
+	//check(IsValid(PawnData) == false); // PawnData가 두번 설정되는 것을 원치 않음
+	check(PawnData == nullptr); // PawnData가 두번 설정되는 것을 원치 않음
 
 	PawnData = InPawnData;
 

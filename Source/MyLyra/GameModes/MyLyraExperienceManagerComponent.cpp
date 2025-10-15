@@ -8,6 +8,11 @@
 #include "GameFeaturesSubsystemSettings.h"
 #include "MyLyraExperienceActionSet.h"
 
+UMyLyraExperienceManagerComponent::UMyLyraExperienceManagerComponent(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
+{
+}
+
 void UMyLyraExperienceManagerComponent::CallOrRegister_OnExperienceLoaded(FOnMyLyraExperienceLoaded::FDelegate&& Delegate)
 {
 	if (IsExperienceLoaded())
@@ -31,6 +36,7 @@ void UMyLyraExperienceManagerComponent::CallOrRegister_OnExperienceLoaded(FOnMyL
 	}
 }
 
+PRAGMA_DISABLE_OPTIMIZATION
 void UMyLyraExperienceManagerComponent::ServerSetCurrentExperience(FPrimaryAssetId ExperienceId)
 {
 	UMyLyraAssetManager& AssetManager = UMyLyraAssetManager::Get();
@@ -55,7 +61,9 @@ void UMyLyraExperienceManagerComponent::ServerSetCurrentExperience(FPrimaryAsset
 
 	StartExperienceLoad();
 }
+PRAGMA_ENABLE_OPTIMIZATION
 
+PRAGMA_DISABLE_OPTIMIZATION
 void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 {
 	check(CurrentExperience);
@@ -79,7 +87,7 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 	// ExperienceActionSet 순회하며, BundleAssetList로 추가
 	for (const TObjectPtr<UMyLyraExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
 	{
-		if (IsValid(ActionSet))
+		if (ActionSet)
 		{
 			// 앞서 생성한 HAS_Shooter_SharedHUD가 추가됨
 			// - BundleAssetList는 Bundle로 등록할 Root의 PrimaryDataAsset을 추가하는 과정 (ChangeBundleStateForPrimaryAssets 참고)
@@ -110,14 +118,14 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 		}
 	}
 
-	FStreamableDelegate OnAssetsLoadedDelegate = FStreamableDelegate::CreateUObject(this, &UMyLyraExperienceManagerComponent::OnExperienceLoadComplete);
+	FStreamableDelegate OnAssetsLoadedDelegate = FStreamableDelegate::CreateUObject(this, &ThisClass::OnExperienceLoadComplete);
 
 	TSharedPtr<FStreamableHandle> Handle = AssetManager.ChangeBundleStateForPrimaryAssets(
 		BundleAssetList.Array(),
 		BundlesToLoad,
 		{}, false, FStreamableDelegate(), FStreamableManager::AsyncLoadHighPriority);
 
-	if (Handle.IsValid() == false || Handle->HasLoadCompleted())
+	if (!Handle.IsValid() || Handle->HasLoadCompleted())
 	{
 		// 로딩 완료되면, ExecuteDelegate를 통해 OnAssetsLoadedDelegate 호출
 		FStreamableHandle::ExecuteDelegate(OnAssetsLoadedDelegate);
@@ -126,13 +134,14 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 	{
 		Handle->BindCompleteDelegate(OnAssetsLoadedDelegate);
 		Handle->BindCancelDelegate(FStreamableDelegate::CreateLambda([OnAssetsLoadedDelegate]()
-		{
-			OnAssetsLoadedDelegate.ExecuteIfBound();
-		}));
+			{
+				OnAssetsLoadedDelegate.ExecuteIfBound();
+			}));
 	}
 
 	static int32 StartExperienceLoad_FrameNumber = GFrameNumber;
 }
+PRAGMA_ENABLE_OPTIMIZATION
 
 void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 {
@@ -145,7 +154,8 @@ void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 	GameFeaturePluginURLs.Reset();
 
 	// std::function<void(const UPrimaryDataAsset*, const TArray<FString>&)>
-	TFunction<void(const UPrimaryDataAsset*, const TArray<FString>&)> CollectGameFeaturePluginURLs = [This = this](const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
+	// TFunction<void(const UPrimaryDataAsset*, const TArray<FString>&)> CollectGameFeaturePluginURLs = [This = this](const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
+	auto CollectGameFeaturePluginURLs = [This = this](const UPrimaryDataAsset* Context, const TArray<FString>& FeaturePluginList)
 	{
 		// FeaturePluginList를 순회하며, PluginURL을 ExperienceManagerComponent의 GameFeaturePluginURLs에 추가
 		for (const FString& PluginName : FeaturePluginList)
@@ -159,11 +169,11 @@ void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 	};
 
 	// GameFeaturesToEnable에 있는 Plugin만 일단 활성화할 GameFeature Plugin 후보군으로 등록
-	CollectGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeatureToEnable);
+	CollectGameFeaturePluginURLs(CurrentExperience, CurrentExperience->GameFeaturesToEnable);
 
 	// GameFeaturePluginURLs에 등록된 Plugin을 로딩 및 활성화
-	NumGameFeaturePluginLoading = GameFeaturePluginURLs.Num();
-	if (NumGameFeaturePluginLoading)
+	NumGameFeaturePluginsLoading = GameFeaturePluginURLs.Num();
+	if (NumGameFeaturePluginsLoading)
 	{
 		LoadState = EMyLyraExperienceLoadState::LoadingGameFeatures;
 		for (const FString& PluginURL : GameFeaturePluginURLs)
@@ -182,8 +192,8 @@ void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 void UMyLyraExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE::GameFeatures::FResult& InResult)
 {
 	// 매 GameFeature Plugin이 로딩될 때, 해당 함수가 롤백으로 불림
-	NumGameFeaturePluginLoading--;
-	if (NumGameFeaturePluginLoading == 0)
+	NumGameFeaturePluginsLoading--;
+	if (NumGameFeaturePluginsLoading == 0)
 	{
 		// GameFeaturePlugin 로딩이 다 끝났을 경우, 기존대로 Loaded로서, OnExperienceFullLoadCompleted 호출
 		// GameFeaturePlugin 로딩과 활성화가 끝났다면? UGameFeatureAction을 활성화 해야하나?
@@ -192,7 +202,6 @@ void UMyLyraExperienceManagerComponent::OnGameFeaturePluginLoadComplete(const UE
 }
 
 PRAGMA_DISABLE_OPTIMIZATION
-
 void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 {
 	check(LoadState != EMyLyraExperienceLoadState::Loaded)
@@ -212,9 +221,10 @@ void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 			}
 		}
 
-		TFunction<void(const TArray<UGameFeatureAction*>&)> ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& InActionList)
+		// TFunction<void(const TArray<UGameFeatureAction*>&)> ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& InActionList)
+		auto ActivateListOfActions = [&Context](const TArray<UGameFeatureAction*>& ActionList)
 		{
-			for (UGameFeatureAction* Action : InActionList)
+			for (UGameFeatureAction* Action : ActionList)
 			{
 				// 명시적으로 GameFeatureAction에 대해 Registering -> Loading -> Activating 순으로 호출
 				if (Action)
@@ -240,7 +250,6 @@ void UMyLyraExperienceManagerComponent::OnExperienceFullLoadComplete()
 	OnExperienceLoaded.Broadcast(CurrentExperience);
 	OnExperienceLoaded.Clear();
 }
-
 PRAGMA_ENABLE_OPTIMIZATION
 
 const UMyLyraExperienceDefinition* UMyLyraExperienceManagerComponent::GetCurrentExperienceChecked() const
