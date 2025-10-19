@@ -24,6 +24,21 @@ public:
 	ATTRIBUTE_ACCESSORS(UMyLyraHealthSet, Health);
 	ATTRIBUTE_ACCESSORS(UMyLyraHealthSet, MaxHealth);
 	ATTRIBUTE_ACCESSORS(UMyLyraHealthSet, Healing);
+
+	/**
+	 * Attribute의 값을 ClampAttribute()를 활용해, 값의 범위를 유지시켜주기 위해
+	 * PreAttributeBaseChange와 PreAttributeChange 오버라이드
+	 */
+	void ClampAttribute(const FGameplayAttribute& Attribute, float& NewValue) const;
+	virtual void PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const override;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+
+	/**
+	 * GameplayEffect가 healthSet의 Attribute를 수정하기 전에 불리는 콜백함수
+	 * - 이는 Healing이 업데이트되면, Health를 Healing을 적용해 업데이트 가능
+	 */
+	virtual bool PreGameplayEffectExecute(struct FGameplayEffectModCallbackData& Data) override;
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 	
 	/** 현재 체력 */
 	UPROPERTY(BlueprintReadOnly, Category = "MyLyra|Health")

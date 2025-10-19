@@ -5,6 +5,7 @@
 #include "MyLyra/AbilitySystem/MyLyraAbilitySet.h"
 #include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/AbilitySystem/Attributes/MyLyraCombatSet.h"
+#include "MyLyra/AbilitySystem/Attributes/MyLyraHealthSet.h"
 #include "MyLyra/Character/MyLyraPawnData.h"
 #include "MyLyra/GameModes/MyLyraExperienceManagerComponent.h"
 #include "MyLyra/GameModes/MyLyraGameModeBase.h"
@@ -14,7 +15,7 @@ AMyLyraPlayerState::AMyLyraPlayerState(const FObjectInitializer& ObjectInitializ
 {
 	AbilitySystemComponent = ObjectInitializer.CreateDefaultSubobject<UMyLyraAbilitySystemComponent>(this, TEXT("AbilitySystemComponent"));
 
-	CreateDefaultSubobject<UMyLyraCombatSet>(TEXT("CombatSet"));
+	CreateDefaultSubobject<UMyLyraHealthSet>(TEXT("HealthSet"));
 	CreateDefaultSubobject<UMyLyraCombatSet>(TEXT("CombatSet"));
 }
 
