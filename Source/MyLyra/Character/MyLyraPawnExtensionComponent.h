@@ -43,6 +43,10 @@ public:
 	void InitializeAbilitySystem(UMyLyraAbilitySystemComponent* InASC, AActor* InOwnerActor);
 	void UnInitializeAbilitySystem();
 
+	/** OnAbilitySystem[Initialized|Uninitialized] Delegate 추가 */
+	void OnAbilitySystemInitialized_RegisterAndCall(FSimpleMulticastDelegate::FDelegate Delegate);
+	void OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate Delegate);
+	
 	/**
 	 * UPawnComponent Interface
 	 */
@@ -67,6 +71,10 @@ public:
 	/** AbilitySystemComponent 캐싱 */
 	UPROPERTY()
 	TObjectPtr<UMyLyraAbilitySystemComponent> AbilitySystemComponent;
+
+	/** ASC Init과 Uninit의 Delegate 추가 */
+	FSimpleMulticastDelegate OnAbilitySystemInitialized;
+	FSimpleMulticastDelegate OnAbilitySystemUninitialized;
 };
 
 template <class T>

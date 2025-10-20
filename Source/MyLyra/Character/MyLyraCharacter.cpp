@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyLyraCharacter.h"
+#include "MyLyraHealthComponent.h"
 #include "MyLyraPawnExtensionComponent.h"
 #include "MyLyra/AbilitySystem/MyLyraAbilitySystemComponent.h"
 #include "MyLyra/Camera/MyLyraCameraComponent.h"
@@ -15,12 +16,20 @@ AMyLyraCharacter::AMyLyraCharacter()
 
 	// PawnExtensionComponent 생성
 	PawnExtensionComponent = CreateDefaultSubobject<UMyLyraPawnExtensionComponent>(TEXT("PawnExtensionComponent"));
-	// 이후 PawnExtensionComponent 가 관리할 Component 들은 BP에서 생성함으로써, PawnExtensionComponent가 무조건적으로 먼저 생성됨을 보장 받는다.(SCS)
+	{
+		PawnExtensionComponent->OnAbilitySystemInitialized_RegisterAndCall(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemInitialized));
+		PawnExtensionComponent->OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate::CreateUObject(this, &ThisClass::OnAbilitySystemUninitialized));
+	}
 
 	// Camera Component 생성
 	{
 		CameraComponent = CreateDefaultSubobject<UMyLyraCameraComponent>(TEXT("CameraComponent"));
 		CameraComponent->SetRelativeLocation(FVector(-300.0f, 0.0f, 75.0f));
+	}
+
+	// HealthComponent 생성
+	{
+		HealthComponent = CreateDefaultSubobject<UMyLyraHealthComponent>(TEXT("HealthComponent"));
 	}
 }
 
@@ -50,4 +59,18 @@ void AMyLyraCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	// Pawn이 Prossess로서, Controller와 PlayerState 정보 접근이 가능한 상태가 되었음
 	// - SetupPlayerInputComponent 확인
 	PawnExtensionComponent->SetupPlayerInputComponent();
+}
+
+void AMyLyraCharacter::OnAbilitySystemInitialized()
+{
+	UMyLyraAbilitySystemComponent* MyLyraASC = Cast<UMyLyraAbilitySystemComponent>(GetAbilitySystemComponent());
+	check(MyLyraASC);
+
+	// HealthComponent의 ASC를 통한 초기화
+	HealthComponent->InitializeWithAbilitySystem(MyLyraASC);
+}
+
+void AMyLyraCharacter::OnAbilitySystemUninitialized()
+{
+	HealthComponent->UninitializeWithAbilitySystem();
 }

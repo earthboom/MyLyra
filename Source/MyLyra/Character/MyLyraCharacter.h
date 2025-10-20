@@ -7,6 +7,7 @@
 #include "ModularCharacter.h"
 #include "MyLyraCharacter.generated.h"
 
+class UMyLyraHealthComponent;
 class UMyLyraCameraComponent;
 class UMyLyraPawnExtensionComponent;
 
@@ -18,6 +19,9 @@ class MYLYRA_API AMyLyraCharacter : public AModularCharacter, public IAbilitySys
 public:
 	// Sets default values for this character's properties
 	AMyLyraCharacter();
+
+	void OnAbilitySystemInitialized();
+	void OnAbilitySystemUninitialized();
 
 	/** IAbilitySystemInterface*/
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -39,4 +43,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyLyra|Character")
 	TObjectPtr<UMyLyraCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MyLyra|Character")
+	TObjectPtr<UMyLyraHealthComponent> HealthComponent;
 };

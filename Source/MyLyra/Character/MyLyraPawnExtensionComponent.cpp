@@ -61,6 +61,9 @@ void UMyLyraPawnExtensionComponent::InitializeAbilitySystem(UMyLyraAbilitySystem
 	// ASC를 업데이트하고, InitAbilityActorInfo를 Pawn과 같이 호출하여, AvatarActor를 Pawn으로 업데이트 함
 	AbilitySystemComponent = InASC;
 	AbilitySystemComponent->InitAbilityActorInfo(InOwnerActor, Pawn);
+
+	// OnAbilitySystemInitialized에 바인딩된 Delegate 호출
+	OnAbilitySystemInitialized.Broadcast();
 }
 
 void UMyLyraPawnExtensionComponent::UnInitializeAbilitySystem()
@@ -70,11 +73,16 @@ void UMyLyraPawnExtensionComponent::UnInitializeAbilitySystem()
 		return;
 	}
 
+	if (AbilitySystemComponent->GetAvatarActor() == GetOwner())
+	{
+		// OnAbilitySystemUninitialized에 다인딩된 Delegate 호출
+		OnAbilitySystemUninitialized.Broadcast();
+	}
+
 	AbilitySystemComponent = nullptr;
 }
 
 PRAGMA_DISABLE_OPTIMIZATION
-
 void UMyLyraPawnExtensionComponent::OnRegister()
 {
 	Super::OnRegister();
@@ -223,4 +231,28 @@ void UMyLyraPawnExtensionComponent::CheckDefaultInitialization()
 	// - InitState에 대한 변화는 Linear(선형적)
 	// - 업데이트가 멈추면 누군가 시작해야 함을 의미 (chaining)
 	ContinueInitStateChain(StateChain);
+}
+
+
+void UMyLyraPawnExtensionComponent::OnAbilitySystemInitialized_RegisterAndCall(FSimpleMulticastDelegate::FDelegate Delegate)
+{
+	// OnAbilitySystemInitialized에 UObject가 바인딩되어 있지 않으면 추가 (Uniqueness)
+	if (OnAbilitySystemInitialized.IsBoundToObject(Delegate.GetUObject()) == false)
+	{
+		OnAbilitySystemInitialized.Add(Delegate);
+	}
+
+	// 이미 ASC가 설정되었으면, Delegate에 추가하는게 아닌 바로 호출 (이미 초기화 되어 있으니)
+	if (AbilitySystemComponent)
+	{
+		Delegate.Execute();
+	}
+}
+
+void UMyLyraPawnExtensionComponent::OnAbilitySystemUninitialized_Register(FSimpleMulticastDelegate::FDelegate Delegate)
+{
+	if (OnAbilitySystemUninitialized.IsBoundToObject(Delegate.GetUObject()))
+	{
+		OnAbilitySystemUninitialized.Add(Delegate);
+	}
 }
