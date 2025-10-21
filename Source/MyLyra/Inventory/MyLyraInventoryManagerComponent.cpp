@@ -17,6 +17,15 @@ UMyLyraInventoryItemInstance* FMyLyraInventoryList::AddEntry(TSubclassOf<UMyLyra
 	NewEntry.Instance = NewObject<UMyLyraInventoryItemInstance>(OwningActor);
 	NewEntry.Instance->ItemDef = ItemDef;
 
+	// iterating fragments and call callback to OnInstanceCreate()
+	for (UMyLyraInventoryItemFragment* Fragment : GetDefault<UMyLyraInventoryItemDefinition>(ItemDef)->Fragments)
+	{
+		if (Fragment)
+		{
+			Fragment->OnInstanceCreated(NewEntry.Instance);
+		}
+	}
+
 	Result = NewEntry.Instance;
 	return Result;
 }

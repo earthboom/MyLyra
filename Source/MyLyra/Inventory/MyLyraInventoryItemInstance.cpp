@@ -18,3 +18,23 @@ const UMyLyraInventoryItemFragment* UMyLyraInventoryItemInstance::FindFragmentBy
 	}
 	return nullptr;
 }
+
+void UMyLyraInventoryItemInstance::AddStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.AddStack(Tag, StackCount);
+}
+
+void UMyLyraInventoryItemInstance::RemoveStatTagStack(FGameplayTag Tag, int32 StackCount)
+{
+	StatTags.RemoveStack(Tag, StackCount);
+}
+
+bool UMyLyraInventoryItemInstance::HasStatTag(FGameplayTag Tag) const
+{
+	return StatTags.ContainsTag(Tag);
+}
+
+int32 UMyLyraInventoryItemInstance::GetStatTagStackCount(FGameplayTag Tag) const
+{
+	return StatTags.GetStackCount(Tag);
+}

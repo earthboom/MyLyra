@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "MyLyraInventoryItemDefinition.generated.h"
 
+class UMyLyraInventoryItemInstance;
+
 /**
  * Inventory에 대한 Fragment 란?
  * - Lyra에서 사용하는 예시
@@ -20,6 +22,7 @@ class UMyLyraInventoryItemFragment : public UObject
 	GENERATED_BODY()
 
 public:
+	virtual void OnInstanceCreated(UMyLyraInventoryItemInstance* Instance) const {}
 };
 
 /**

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MyLyra/System/MyLyraGameplayTagStack.h"
 #include "UObject/NoExportTypes.h"
 #include "MyLyraInventoryItemInstance.generated.h"
 
@@ -29,6 +30,17 @@ public:
 		return (ResultClass*)FindFragmentByClass(ResultClass::StaticClass());
 	}
 
+	void AddStatTagStack(FGameplayTag Tag, int32 StackCount);
+	void RemoveStatTagStack(FGameplayTag Tag, int32 StackCount);
+
+	bool HasStatTag(FGameplayTag Tag) const;
+
+	UFUNCTION(BlueprintCallable, Category = Inventory)
+	int32 GetStatTagStackCount(FGameplayTag Tag) const;
+
+	UPROPERTY()
+	FMyLyraGameplayTagStackContainer StatTags;
+	
 	/** Inventory Item의 인스턴스에는 무엇으로 정의되었는지 메타 클래스인 MyLyraInventoryItemDefinition을 들고 있음 */
 	UPROPERTY()
 	TSubclassOf<UMyLyraInventoryItemDefinition> ItemDef;
