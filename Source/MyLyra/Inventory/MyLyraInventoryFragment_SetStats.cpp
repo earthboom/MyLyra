@@ -6,6 +6,7 @@
 
 void UMyLyraInventoryFragment_SetStats::OnInstanceCreated(UMyLyraInventoryItemInstance* Instance) const
 {
+	// InitialItemStats의 Iterating 및 InventoryItemInstance에 통계 태그 추가
 	for (const TPair<FGameplayTag, int32>& InitialItemStat : InitializeItemStats)
 	{
 		Instance->AddStatTagStack(InitialItemStat.Key, InitialItemStat.Value);

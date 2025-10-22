@@ -6,6 +6,7 @@
 #include "MyLyra/AbilitySystem/Abilities/MyLyraGameplayAbility.h"
 #include "MyLyraGameplayAbility_FromEquipment.generated.h"
 
+class UMyLyraInventoryItemInstance;
 class UMyLyraEquipmentInstance;
 
 UCLASS()
@@ -15,4 +16,5 @@ class MYLYRA_API UMyLyraGameplayAbility_FromEquipment : public UMyLyraGameplayAb
 
 public:
 	UMyLyraEquipmentInstance* GetAssociatedEquipment() const;
+	UMyLyraInventoryItemInstance* GetAssociatedItem() const;
 };

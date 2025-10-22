@@ -17,6 +17,8 @@ enum class EMyLyraAbilityActivationPolicy : uint8
 	OnSpawn,
 };
 
+class UMyLyraAbilityCost;
+
 /**
  * 
  */
@@ -28,7 +30,13 @@ class MYLYRA_API UMyLyraGameplayAbility : public UGameplayAbility
 public:
 	UMyLyraGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+
 	/** 언제 GA가 활성화될지 정책 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "MyLyra|AbilityActivation")
 	EMyLyraAbilityActivationPolicy ActivationPolicy;
+
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = "MyLyra|Costs")
+	TArray<TObjectPtr<UMyLyraAbilityCost>> AdditionalCosts;
 };

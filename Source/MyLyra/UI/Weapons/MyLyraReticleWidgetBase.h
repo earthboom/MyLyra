@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitializeFromWeapon(UMyLyraWeaponInstance* InWeapon);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnWeaponInitialized();
+
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<UMyLyraWeaponInstance> WeaponInstance;
 

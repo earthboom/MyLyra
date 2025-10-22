@@ -17,4 +17,6 @@ void UMyLyraReticleWidgetBase::InitializeFromWeapon(UMyLyraWeaponInstance* InWea
 	{
 		InventoryItemInstance = Cast<UMyLyraInventoryItemInstance>(WeaponInstance->GetInstigator());
 	}
+
+	OnWeaponInitialized();
 }

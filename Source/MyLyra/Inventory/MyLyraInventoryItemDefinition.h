@@ -22,6 +22,7 @@ class UMyLyraInventoryItemFragment : public UObject
 	GENERATED_BODY()
 
 public:
+	/** UMyLyraInventoryManagerComponent의 인벤토리 목록에 인벤토리 항목 인스턴스가 추가될 때 호출하는 Interface */
 	virtual void OnInstanceCreated(UMyLyraInventoryItemInstance* Instance) const {}
 };
 
