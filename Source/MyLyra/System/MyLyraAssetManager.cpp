@@ -31,14 +31,14 @@ UMyLyraAssetManager& UMyLyraAssetManager::Get()
 // 원하는 부분만 디버깅이 가능하도록 할 수 있음
 // Develop 일 때도 디버깅 잡힘
 PRAGMA_DISABLE_OPTIMIZATION
-
 void UMyLyraAssetManager::StartInitialLoading()
 {
 	Super::StartInitialLoading();
 
+	UE_LOG(LogMyLyra, Display, TEXT("UMyLyraAssetManager::StartInitialLoading"));
+
 	FMyLyraGameplayTags::InitializeNativeTags();
 }
-
 PRAGMA_ENABLE_OPTIMIZATION
 
 bool UMyLyraAssetManager::ShouldLogAssetLoads()
@@ -85,7 +85,7 @@ void UMyLyraAssetManager::AddLoadedAsset(const UObject* Asset)
 {
 	if (ensureAlways(Asset))
 	{
-		// 해당 타이밍에는 멀티 스레드가 안전하다는 보장이 없기 때문에 LOCK을 건다.
+		// 해당 타이밍에는 멀티 스레드가 안전하다는 보장이 없기 때문에 LOCK을 건다. (Thread-safe)
 		// 즉, 한 명씩 추가하겠다는 의미
 		FScopeLock Lock(&SyncObject);
 		LoadedAssets.Add(Asset);

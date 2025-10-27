@@ -2,6 +2,13 @@
 
 #include "MyLyraUserFacingExperience.h"
 #include "CommonSessionSubsystem.h"
+#include UE_INLINE_GENERATED_CPP_BY_NAME(MyLyraUserFacingExperience)
+/**
+ * UE_INLINE_GENERATED_CPP_BY_NAME
+ * - cpp파일에서 사용되며, 헤더 파일에 있는 GENERATED_BODY() 매크로와 한쌍으로 작동
+ * - UHT(Unreal Header Tool)가 자동으로 생성해 준 C++ 코드 구현부(.gen.cpp)를 이 자리에 통째로 붙여 넣어라라는 #include 명령어
+ */
+
 
 UCommonSession_HostSessionRequest* UMyLyraUserFacingExperience::CreateHostingRequest() const
 {
