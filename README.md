@@ -1,6 +1,6 @@
 # 구현할 클래스의 관계도
 
-<img width="1884" height="999" alt="image" src="https://github.com/user-attachments/assets/dbfb6888-8fca-43d1-a776-1ca0717f0af6" />
+<img width="1912" height="982" alt="image" src="https://github.com/user-attachments/assets/0390cf36-6fda-40b2-b6ee-069acaaf64cb" />
 
 # PlayerCharacter가 Spawn되는 과정
 
