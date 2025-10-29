@@ -22,6 +22,12 @@ AMyLyraGameModeBase::AMyLyraGameModeBase(const FObjectInitializer& ObjectInitial
 	HUDClass = AMyLyraHUD::StaticClass();
 }
 
+/**
+ * InitializeActorsForPlay 는 본격적인 게임의 룰을 정의/준비하는 과정으로 이해
+ * - 여기선 GameMode와 GameState 생성
+ * - GameState 생성과 함꼐 ExperienceManagerComponent 생성등이 발생
+ */
+
 void AMyLyraGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
@@ -74,6 +80,7 @@ APawn* AMyLyraGameModeBase::SpawnDefaultPawnAtTransform_Implementation(AControll
 
 	if (UClass* PawnClass = GetDefaultPawnClassForController(NewPlayer))
 	{
+		// 실제 캐릭터 생성 구간
 		if (APawn* SpawnedPawn = GetWorld()->SpawnActor<APawn>(PawnClass, SpawnTransform, SpawnInfo))
 		{
 			// FindPawnExtensionComponent 구성
@@ -151,6 +158,7 @@ void AMyLyraGameModeBase::OnExperienceLoaded(const UMyLyraExperienceDefinition* 
 		{
 			if (PlayerCanRestart(PC))
 			{
+				// GameMode에서 Experience의 속성에 맞추어 플레이어를 재세팅 진행
 				RestartPlayer(PC);
 			}
 		}

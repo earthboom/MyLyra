@@ -27,6 +27,9 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnMyLyraExperienceLoaded, const UMyLyraExpe
  * UMyLyraExperienceManagerComponent
  * - 해당 Component는 Game State를 Owner 로 가지며, Experience의 상태 정보를 가지고 있는 Component
  * - Manager 라는 단어가 포함되어 있듯, Experience 로딩 상태 업데이트 및 이벤트 관리
+ *
+ * Lyra는 게임 모드를 Experience로 관리한다.
+ * - Experience 정보를 담고 관리하는 것을 Actor-Component 관계로 ExperienceManagerComponent가 관리하고 있다.
  */
 UCLASS()
 class MYLYRA_API UMyLyraExperienceManagerComponent : public UGameStateComponent

@@ -59,6 +59,7 @@ void UMyLyraExperienceManagerComponent::ServerSetCurrentExperience(FPrimaryAsset
 		CurrentExperience = Experience;
 	}
 
+	// 게임 플레이에 필요한 Experience를 로딩함
 	StartExperienceLoad();
 }
 PRAGMA_ENABLE_OPTIMIZATION
@@ -143,6 +144,7 @@ void UMyLyraExperienceManagerComponent::StartExperienceLoad()
 }
 PRAGMA_ENABLE_OPTIMIZATION
 
+// Experience가 로딩되면, Callback으로 호출되는 함수
 void UMyLyraExperienceManagerComponent::OnExperienceLoadComplete()
 {
 	static int32 OnExperienceLoadComplete_FrameNumber = GFrameNumber;

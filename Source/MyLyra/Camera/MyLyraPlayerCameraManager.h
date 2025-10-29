@@ -12,7 +12,7 @@
 #define MYLYRA_CAMERA_DEFAULT_PITCH_MAX (89.0f)
 
 /**
- * 
+ * PlayerController는 CameraManager에 대한 소유권을 가진다.
  */
 UCLASS()
 class MYLYRA_API AMyLyraPlayerCameraManager : public APlayerCameraManager

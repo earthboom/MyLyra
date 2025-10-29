@@ -51,6 +51,7 @@ void AMyLyraPlayerState::OnExperienceLoaded(const UMyLyraExperienceDefinition* C
 		const UMyLyraPawnData* NewPawnData = GameMode->GetPawnDataForController(GetOwningController());
 		check(NewPawnData);
 
+		// Experience에 아펏 우리가 만들었던 PawnData가 있는데, 이를 PlayerState에 캐싱 진행
 		SetPawnData(NewPawnData);
 	}
 }
