@@ -21,7 +21,7 @@
 3. **임시 폰(Pawn) 스폰 (20 ~ 29)**
   - GameMode는 HandleStartingNewPlayer를 호출하여 플레이어가 게임을 시작할 준비 (20)
   - 플레이어 시작 지점(PlayerStart)을 찾는다. (22)
-  - **SpawnDefaultPawnAtTransform**을 호출하여 **임시 폰(Pawn)**을 스폰 (26)
+  - **SpawnDefaultPawnAtTransform**을 호출하여 **임시 폰(Pawn)**  을 스폰 (26)
     - [중요] 이 폰은 아직 최종 PlayerCharacter가 아닐 수 있다. (예: 스펙테이터(Spectator) 폰)
     - 이 폰은 PlayerController에 빙의(Possess)된다. (29)
   
@@ -29,10 +29,10 @@
 
 ## 2단계 : 게임 경험(Experience) 로드 (GameState 역할)
 이 단계는 "이 맵에서는 이 캐릭터와 이 규친(GAS)로 플레이한다"는 데이터를 로드하는 과정
-1. **경험(Experience) 설정 (31 ~ 33) **
+1. **경험(Experience) 설정 (31 ~ 33)**
   - 별도의 이벤트(예: Host/Join 또는 OnMatchAssignmentGiven)가 GameMode에게 "이제 이 경험을 로드하라"고 알린다. (31)
   - GameMode는 GameState에 있는 ExperienceManagerComponent에게 해당 경험을 설정하라고 명령 (33)
-2. **비동기 로드 시작 (34 ~ 35) **
+2. **비동기 로드 시작 (34 ~ 35)**
   - ExperienceManagerComponent가 StartExperienceLoad를 호출
   - 이 경험에 필요한 모든 것(예: PawnData, 게임플레이 어빌리티(GAS) 세트, UI 등)을 비동기(Async)로 로드하기 시작
   
