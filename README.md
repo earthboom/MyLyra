@@ -28,7 +28,7 @@
   **현재 상태** : 플레이어는 게임 월드에 PlayerController와 PlayerState, 그리고 (아마도) 임시 폰을 가지고 접속했지만, 아직 자신이 어떤 캐릭터가 되어야 하는지 모른다.
 
 ## 2단계 : 게임 경험(Experience) 로드 (GameState 역할)
-이 단계는 "이 맵에서는 이 캐릭터와 이 규친(GAS)로 플레이한다"는 데이터를 로드하는 과정
+이 단계는 "이 맵에서는 이 캐릭터와 이 규칙(GAS)으로 플레이한다"는 데이터를 로드하는 과정
 1. **경험(Experience) 설정 (31 ~ 33)**
   - 별도의 이벤트(예: Host/Join 또는 OnMatchAssignmentGiven)가 GameMode에게 "이제 이 경험을 로드하라"고 알린다. (31)
   - GameMode는 GameState에 있는 ExperienceManagerComponent에게 해당 경험을 설정하라고 명령 (33)
@@ -48,7 +48,7 @@
   - GameMode 역시 이 신호를 듣는다. (40)
   - 이제 GameMode는 "플레이어도 접속해 있고(1단계), 경험(데이터)도 로드되었음(2단계)"을 안다.
   - GameMode는 PlayerCanRestart 같은 함수를 통해 PlayerController에게 "이제 진짜 캐릭터를 스폰해도 된다"고 알린다. (42)
-3. **최종 PlayerCharacter 스폰 (다이어그램의 27번의 실제 의미)
+3. **최종 PlayerCharacter 스폰 (다이어그램의 27번의 실제 의미)**
   - PlayerController는 PlayerState에 저장된 PawnData를 확인
   - GameMode의 SpawnPlayerPawn (또는 RestartPlayerAtPlayerStart)을 호출하여 PawnData에 정의된 **최종 PlayerCharacter**를 스폰하고, 임시 폰을 파괴한 뒤 새 캐릭터에 빙의(Possess)
 
