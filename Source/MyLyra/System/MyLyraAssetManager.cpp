@@ -55,7 +55,12 @@ UObject* UMyLyraAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetP
 	// 해당 함수를 따로 만드는 이유는 'synchronous load asset 이 불필요하게 하는 것이 없는지 확인하기 위함
 	if (AssetPath.IsValid())
 	{
+		// 로딩 시간을 측정하고 로그를 남기기 위한 'FScopeLogTime' 객체를 담을 TUniquePtr 선언
 		TUniquePtr<FScopeLogTime> LogTimePtr;
+		/** Asset Loading 로그를 남겨야 하는지 확인하는 조건문 
+		 * - ShouldLogAssetLoads() 함수는 보통 "-LogAssetLoads" 같은 커맨드 라인 인자가 주어졌을 때, true를 반환
+		 * - 개발 중 성능 문제 분석할 때, 특정 에셋의 로딩 시간을 추적하기 위한 디버깅 기능
+		 */
 		if (ShouldLogAssetLoads())
 		{
 			// 단순 로깅하면서 초단위로 로깅 진행

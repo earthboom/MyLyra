@@ -12,6 +12,9 @@ class UMyLyraCameraMode;
 
 /**
  * 어떤 Pawn을 생성하는지, 입력을 어떻게 하는지, 스킬 뭘 사용하는지 와 같은 데이터 , Ability 를 뭘 들고 있는지
+ *
+ * 2025.10.31
+ * Pawn을 정의하는데 사용되는 속성(Properties)를 담고 있는, 불변(Non-mutable) 데이터 에셋
  */
 UCLASS()
 class MYLYRA_API UMyLyraPawnData : public UPrimaryDataAsset

@@ -12,6 +12,11 @@
 #include "MyLyra/Player/MyLyraPlayerState.h"
 #include "MyLyra/UI/MyLyraHUD.h"
 
+/**
+ * 2025.10.31
+ * WorldSettings를 통한 GameMode 세팅을 따로하지 않음
+ * - Experience를 통해 게임의 장르를 바꾸는 방식이기에, GameMode는 항상 맵 관계 없이 동일해지기 때문에 그런듯? (추가적 분석 필요)
+ */
 AMyLyraGameModeBase::AMyLyraGameModeBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
@@ -28,6 +33,11 @@ AMyLyraGameModeBase::AMyLyraGameModeBase(const FObjectInitializer& ObjectInitial
  * - GameState 생성과 함꼐 ExperienceManagerComponent 생성등이 발생
  */
 
+/**
+ * 2025.10.31
+ * - 호출의 큰 흐름 : GameInstance -> World -> GameMode
+ * - GameMode의 초기화가 Unreal의 GameFramework 시작점으로 이해하면, 관련되어 디버깅이 필요할 경우 여기를 진입점으로 삼는다.
+ */
 void AMyLyraGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);

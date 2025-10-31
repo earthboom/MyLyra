@@ -27,10 +27,17 @@ public:
 	/** GetDefaultPawnClassForController */
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) final; // (20)
 
-	/** HandleStartingNewPlayer */
+	/** HandleStartingNewPlayer
+	 * 2025.10.31
+	 * PlayerController, PlayerState 생성이 끝났으면, NewPlayer 시작할 준비가 되었다.
+	 * - Experience가 로딩되기 전까지 NewPlayer 실행을 멈추어야 하는데, 그 역할을 이 함수가 수행
+	 */
 	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) final;
 
-	/** SpawnDefaultPawnAtTransform */
+	/** SpawnDefaultPawnAtTransform
+	 * 2025.10.31
+	 * - 실제 게임 모드에 SpawnDefaultPawn을 호출하는 함수는 SpawnDefaultPawnAtTransform 이다.
+	 */
 	virtual APawn* SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform) final;
 
 	/**
@@ -45,3 +52,9 @@ public:
 	void OnExperienceLoaded(const UMyLyraExperienceDefinition* CurrentExperience);
 	const UMyLyraPawnData* GetPawnDataForController(const AController* InController) const; // (21)
 };
+
+/**
+ * 2025.10.31
+ * BlueprintNativeEvent
+ * C++에서 함수를 구현할 예정이지만, 필요하다면 Blueprint에서 재정의 가능하다는 것을 의미
+ */

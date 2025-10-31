@@ -41,7 +41,7 @@ public:
 	
 	bool IsExperienceLoaded() { return (LoadState == EMyLyraExperienceLoadState::Loaded) && (CurrentExperience != nullptr); }
 
-	// 아래의 OnExperienceLvlel 에 바인딩하거나, 이미 Experience 로딩이 완료되었다면 바로 호출
+	// 아래의 OnExperienceLoaded 에 바인딩하거나, 이미 Experience 로딩이 완료되었다면 바로 호출
 	void CallOrRegister_OnExperienceLoaded(FOnMyLyraExperienceLoaded::FDelegate&& Delegate);
 
 	void ServerSetCurrentExperience(FPrimaryAssetId ExperienceId);
@@ -52,6 +52,11 @@ public:
 	const UMyLyraExperienceDefinition* GetCurrentExperienceChecked() const;
 
 public:
+	/**
+	 * 2025.10.31
+	 * CurrentExperience 멤버 변수는 Lyra에서 'ReplicatedUsing='으로 선언되어 있음
+	 * - 현 프로젝트에선 Replication을 신경 쓰지 않을 것이라 제외함
+	 */
 	UPROPERTY()
 	TObjectPtr<const UMyLyraExperienceDefinition> CurrentExperience = nullptr;
 

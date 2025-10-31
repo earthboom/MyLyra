@@ -43,6 +43,10 @@ class UMyLyraPawnData;
  * - 하나의 게임 경험을 완벽하게 정의하고 구성하는 중앙 집중식 데이터 애셋
  * - 이는 모듈형 게임 기능, GAS(간접적으로 ActionSets나 Actions 내의 UGameFeatureAction을 통해 어빌리티 부여 로직이 포함될 수 있음), 그리고 데이터 기반 UI를 유기적으로 연결하여, 유연하고 확장 가능한 게임 아키텍처를 구축하는 데 핵심적인 역할
  * - 새로운 게임 모드를 추가하거나 기존 모드를 수정할 때, 이 애셋을 통해 대부분의 설정을 처리하게 된다.
+ *
+ * 2025.10.31
+ * - Experience가 로딩 완료되었을 경우, 이벤트를 받아 Experience의 DefaultPawnData를 PlayerState에 설정할 필요가 있다.
+ *		- 앞서 MyLyraExperienceManagerComponent의 OnExperienceLoaded에 등록할 필요가 있다
  */
 UCLASS()
 class UMyLyraExperienceDefinition : public UPrimaryDataAsset

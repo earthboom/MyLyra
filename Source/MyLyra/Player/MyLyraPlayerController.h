@@ -38,4 +38,5 @@ public:
  * - Spawn을 통해 PlayerState를 Controller가 생성
  * - Controller와 Model 관계로 이해하면 편함 (혹은 GameMode - GameState 관계)
  * - 로직(Controller)와 Model(데이터/상태) 관계로 이해
+ * - 생성 흐름 : APlayerController::PostInitializeComponents -> AController::InitPlayerState()
  */

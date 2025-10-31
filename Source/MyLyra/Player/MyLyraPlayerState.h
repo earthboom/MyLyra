@@ -9,8 +9,12 @@
 class UMyLyraAbilitySystemComponent;
 class UMyLyraPawnData;
 class UMyLyraExperienceDefinition;
+
 /**
- * 
+ * 2025.10.31
+ * - AMyLyraPlayerState는 MyLyraPawnData가 필요 (PawnData)
+ *		- 당연히 PlayerController가 Possess할 Character Spawn에 대한 정보가 필요하기 때문
+ *		- MyLyraPawnData는 ExperienceDefinition에 있다!
  */
 UCLASS()
 class MYLYRA_API AMyLyraPlayerState : public APlayerState

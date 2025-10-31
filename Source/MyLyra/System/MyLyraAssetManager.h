@@ -17,7 +17,7 @@
  * 1) 게임 시작 시점 : 초기화의 허브 (StartInitialLoading)
  * - 게임 엔진이 시작될 때 단 한 번 호출
  * - 이 함수는 부모 클래스의 로직을 실행한 후, FMyLyraGameplayTags::InitializeNativeTags()를 호출 (매우 중요한 아키텍처적 패턴)
- * -  Asset Manager는 가장 먼저 초기화되는 시스템 중 하나이므로, 게임플레이 태그(Gameplay Tags)처럼 다른 모든 시스템보다 먼저 준비되어야 하는 핵심 데이터를 초기화하는 완벽한 '시동 지점(entry point)'
+ * - Asset Manager는 가장 먼저 초기화되는 시스템 중 하나이므로, 게임플레이 태그(Gameplay Tags)처럼 다른 모든 시스템보다 먼저 준비되어야 하는 핵심 데이터를 초기화하는 완벽한 '시동 지점(entry point)'
  * 2) 에셋 로딩 관리 : SynchronousLoadAsset, GetAsset
  * - 소프트 오브젝트 포인터(TSoftObjectPtr)로 지정된 애셋의 실제 데이터가 필요할 때 호출
  * - `SynchronousLoadAsset`: 이 함수는 단순히 애셋을 동기 로딩하는 것을 넘어, FScopeLogTime을 이용해 로딩 시간을 기록하고 로그를 남김
@@ -31,6 +31,11 @@
  *
  * 결론
  * -  단순한 로더가 아닌, 안정성, 성능, 데이터 기반 철할을 지키기 위해 에셋 로딩 규칙을 가제하고, 디버깅 기능을 제공하며, 메모리를 효율적으로 관리하는 '중앙 통제 시스템'
+ * -------------------------------------------------------------------------
+ * 2025.10.31
+ * 이 클래스는 기능을 오버라이드하고 게임별 타입을 저장하는, AssetManager의 게임 구현체
+ * 대부분의 게임은 AssetManager를 오버라이드할 것으로 예쌍되는데, 이는 게임에 특화된 로딩 로직을 구현하기에 좋은 장소를 제공하기 때문
+ * 이 클래스는 DefaultEngine.ini 파일의 'AssetManagerClassName' 설정을 통해 사용된다.
  */
 UCLASS()
 class MYLYRA_API UMyLyraAssetManager : public UAssetManager
