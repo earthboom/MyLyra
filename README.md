@@ -61,6 +61,93 @@
 이처럼 접속과 데이터 로드를 분리하는 것이 모듈형 게임플레이의 핵심이며, 이를 통해 유연한 게임 모드를 만들 수 있다.
 
 
+# Module과 Plugin 그리고 Project
+### Module
+- Module은 하나의 dll 단위로 라이브러리로 생각하자
+- .h / .cpp 를 **묶는 하나의 최소 단위로 생각**할 수 있다.
+- Unreal Engine은 Module 정의를 위해 필요한 구성 요소는 아래와 같다.
+    - 우선 Module의 이름을 myLyraFeature라고 하자
+    1. MyLyraFeature.Build.cs
+    2. FMyLyraFeatureModule.h / .cpp
+      - IMPLEMENT_PRIMARY_GAME_MODULE
+- 참고로, **Module은 단독으로 Unreal Engine에서 구성할 수 없다.**
+    - Plugin 혹은 Project에 종속되어 활성화 되어야 한다!
+
+### Plugin [Code]
+- Unreal Engine을 **확장하는 단위**
+    - uni-direction한 참조 구조를 가지게 된다.
+
+<img width="486" height="625" alt="image" src="https://github.com/user-attachments/assets/12676f6c-3c73-40fa-a337-4acc572381fe" />
+
+- 반대로, **UnrealEngine에서 Plugin을 참조할 수 없다!**
+    - 보통 Unreal Engine에서도 Experimental한 Plugin은 따로 외부 Plugin으로 구성한 이후, 충분히 검증되면(Productio-Ready), 내부 Module로 통합한다.
+
+- **알아두면 좋은 특징들**
+    - 복수 개의 Module로 구성:
+      - **.h/.cpp로 구성할 수 없음!**
+    - 복수 개의 Plugin을 참조 가능
+    - description 파일로 .uplugin 을 참고
+    - 독립적인 Content 폴더 구성 가능
+- Plugin의 구성요소
+  우선 Plugin 이름을 MyLyraPlugin 이라 가정
+  1. MyLyraPlugin.uplugin
+  2. 1 개 이상의 Module 들 **(없어도 됨)**
+
+### Project
+- Unreal Engine의 활용 대상이 되는 프로젝트
+- **알아두면 좋은 특징들**
+    - 복수 개의 Module로 구성
+        - Plugin과 마찬가지로 **.h / .cpp 로 구성할 수 없음!**
+    - 복수 개의 Plugin 참조 및 구성 가능
+        - 하나의 uproject에 대해 여러 개의 Plugin을 포함도 가능하다는 것을 알 수 있다.
+        - 물론 구성하지 않은 **외부의 Plugin도 참조 가능**
+
+<img width="453" height="765" alt="image" src="https://github.com/user-attachments/assets/e89a0673-fa04-474c-b712-f080e7153d5b" />
+
+  - description 파일로 .uproject를 참조
+- Project의 구성요소
+  Project의 이름을 MyLyra 라고 가정
+  1. MyLyra.uproject
+  2. MyLyra[Editor|Game|Server|Client].Target.cs:
+       - **빌드 대상을 나누고 싶은 개수대로 추가 가능**
+  3. 1개 이상 Module들
+
+### Plugin [Content]
+- Unreal Engine은 Blueprint가 있고, 이를 통해 코드 없이 에셋으로 Plugin을 구성할 수 있다.
+- 앞서 언급했뜻, Plugin은 독립적인 Content 구조를 가져갈 수 있다.
+    - **해당 경로에 Blueprint와 같은 로직 관련 에셋을 통해 Unreal Engine을 확장하는 구조를 가져갈 수 있다.**
+- 이 경우, **Editor를 통해 Plugin 생성을 추천**
+
+#### Unreal Engine 과 LyraStarterGame을 통해 아래 구조 확인
+
+<img width="966" height="788" alt="image" src="https://github.com/user-attachments/assets/6e888d11-1627-40d1-be76-af8ba2b377e8" />
+<img width="711" height="669" alt="image" src="https://github.com/user-attachments/assets/d9d82553-7f0b-422b-a76a-62869ab87cc7" />
+
+1. Unreal Engine과 Project(uproject)는 Module과 Plugin으로 구성되어 있다.
+2. Plugin은 Module로 구성되어 있다.
+    - Unreal Engine의 Plugin인 Bridge는 2개의 Module로 구성되어 있다.
+         - Bridge, MegascansPlugin
+         - 여기서, Plugin은 복수개의 Module을 포함하는 것을 확인할 수 있다.
+    - LyraStarterGame Project에도 똑같이 Plugin이 Module로 포함되게 된다.
+
+#### 실제로 Plugin과 Module은 Build.cs 분석 및 uplugin과 uproject 파일에 대한 속성 값들을 이해해야 제대로 활용 가능
+- Circular Referencing 에 대한 이해 필요하지만 이 프로젝트의 목적과 벗어난 부분
+- Module <-> Plugin, Project에 대해 이해만 목적으로 한다
+
+---
+
+## GameMode 관계도
+- AGameState
+- AMyLyraPlayerController
+- AMyLyraPlayerState
+- AMyLyraCharacter
+
+<img width="3347" height="864" alt="image" src="https://github.com/user-attachments/assets/95d1fba8-ddbe-4e74-946d-6b1e6ba66f02" />
+
+
+
+
+
 
 
 
