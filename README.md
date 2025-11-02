@@ -144,6 +144,11 @@
 
 <img width="3347" height="864" alt="image" src="https://github.com/user-attachments/assets/95d1fba8-ddbe-4e74-946d-6b1e6ba66f02" />
 
+# MyLyra 클래스 관계도
+
+<img width="3333" height="903" alt="image" src="https://github.com/user-attachments/assets/5e204478-8c0f-498d-84da-38d628e9c73e" />
+
+# MyLyra 실행 흐름
 
 
 
